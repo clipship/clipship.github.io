@@ -1,0 +1,28 @@
+@use 'sass:color' as sass;
+
+@function color-key($name, $shade: 0) {
+	@return --color-#{$name}-#{$shade + 3};
+}
+
+@function var-color($name, $shade: 0) {
+	@return var(color-key($name, $shade));
+}
+
+@mixin color($name, $color) {
+	#{color-key($name, -2)}: #{sass.adjust($color, $lightness: -40%, $saturation: -50%)};
+	#{color-key($name, -1)}: #{sass.adjust($color, $lightness: -25%, $saturation: -40%)};
+
+	#{color-key($name)}: #{$color};
+
+	#{color-key($name, +1)}: #{sass.adjust($color, $lightness: 20%)};
+	#{color-key($name, +2)}: #{sass.adjust($color, $lightness: 30%)};
+}
+
+:root {
+	@include color('primary', #ff472f);
+	@include color('secondary', #5031ff);
+
+	#{color-key('background')}: #16141b;
+	#{color-key('text')}: white;
+	#{color-key('text-dark')}: var-color('background');
+}

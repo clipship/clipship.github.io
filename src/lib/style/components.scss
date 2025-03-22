@@ -1,0 +1,42 @@
+@use './scheme.scss';
+
+@mixin transitions-snappy($properties: null) {
+	transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+	transition-duration: 0.5s;
+
+	&:hover,
+	&:focus-within {
+		transition-duration: 0.1s;
+	}
+}
+
+%button {
+	font: inherit;
+	font-weight: bold;
+	text-transform: uppercase;
+
+	cursor: pointer;
+	padding: 8px 12px;
+	background-color: scheme.var-color('primary');
+	color: scheme.var-color('text');
+	border: 1px solid scheme.var-color('text');
+	box-shadow: 4px 4px 0 scheme.var-color('primary', -1);
+
+	outline: 2px solid transparent;
+	outline-offset: 0px;
+
+	@include transitions-snappy();
+
+	&:hover,
+	&:focus-within {
+		background-color: scheme.var-color('text');
+		color: scheme.var-color('primary');
+
+		outline: 2px solid scheme.var-color('text');
+		outline-offset: 4px;
+	}
+
+	&:active {
+		outline-offset: 2px;
+	}
+}

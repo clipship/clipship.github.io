@@ -1,0 +1,33 @@
+@use './fonts.scss';
+@use './scheme.scss';
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+:root {
+	background-color: scheme.var-color('background');
+	color: scheme.var-color('text');
+
+	font-family: fonts.$body;
+	font-size: 18px;
+}
+
+a,
+em,
+h1 {
+	color: scheme.var-color('primary');
+}
+
+h1,
+h2,
+h3 {
+	font-family: fonts.$header;
+}
