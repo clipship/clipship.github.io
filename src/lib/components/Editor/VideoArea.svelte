@@ -1,23 +1,13 @@
 <script lang="ts">
 	import FilePicker from './FilePicker.svelte';
 
-	let pickedFile = $state<File>();
-	let pickedFileBlobUrl = $derived(pickedFile ? URL.createObjectURL(pickedFile) : undefined);
-
-	let videoElement = $state<HTMLMediaElement>();
-
-	// $effect(() => {
-	// 	if (videoElement) {
-	// 	}
-	// });
-
-	function onLoadedMetadata() {
-		// @ts-expect-error captureStream() is not available in Firefox
-		const mediaStream: MediaStream = videoElement!.captureStream();
-
-		console.log(mediaStream);
-		console.log(mediaStream.getAudioTracks());
+	interface Props {
+		file?: File;
 	}
+
+	let { file: pickedFile = $bindable() }: Props = $props();
+
+	let pickedFileBlobUrl = $derived(pickedFile ? URL.createObjectURL(pickedFile) : undefined);
 </script>
 
 <div class:default-size={pickedFile === undefined}>
@@ -25,12 +15,7 @@
 		<FilePicker onPickFile={(file) => (pickedFile = file)} />
 	{:else}
 		<!-- svelte-ignore a11y_media_has_caption -->
-		<video
-			src={pickedFileBlobUrl}
-			bind:this={videoElement}
-			onloadedmetadata={onLoadedMetadata}
-			controls
-		></video>
+		<video src={pickedFileBlobUrl} controls></video>
 	{/if}
 </div>
 
@@ -41,6 +26,7 @@
 		display: grid;
 		place-content: center;
 		border: 1px solid scheme.var-color('primary');
+		position: relative;
 
 		&.default-size {
 			min-height: 200px;
@@ -48,6 +34,7 @@
 	}
 
 	video {
+		position: absolute;
 		width: 100%;
 		height: 100%;
 	}

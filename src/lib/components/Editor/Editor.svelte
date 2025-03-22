@@ -1,29 +1,49 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import type { FFmpegApi } from '../util/ffmpeg-api';
 	import { useFFmpeg } from '../util/FFmpegProvider.svelte';
 	import TimelineArea, { type TrackState } from './TimelineArea/TimelineArea.svelte';
 	import VideoArea from './VideoArea.svelte';
 
-	const { downloadProgress, ffmpeg, startDownload } = useFFmpeg();
+	const { ffmpeg, startLoading } = useFFmpeg();
 
-	let tracks = $state<TrackState[]>([{ isUsed: true }]);
+	if (browser) {
+		startLoading();
+	}
+
+	let file = $state<File>();
+	let tracks = $state<TrackState[]>([]);
 
 	$effect(() => {
-		if (browser) {
-			startDownload();
+		const loadedFFmpeg = $ffmpeg;
+
+		if (loadedFFmpeg) {
+			loadedFFmpeg.enableLogging = true;
+
+			if (file) {
+				loadFile(loadedFFmpeg, file);
+			}
 		}
 	});
+
+	async function loadFile(ffmpeg: FFmpegApi, file: File) {
+		const probeOutput = await ffmpeg.probe(file);
+
+		const audioStreams = probeOutput.streams.filter((stream) => stream.codec_type === 'audio');
+
+		tracks = audioStreams.map((audioStream) => ({
+			isUsed: true
+		}));
+	}
 </script>
 
 {#if !$ffmpeg}
 	<div class="loading">
-		{#if $downloadProgress}
-			<p>{$downloadProgress.received} / {$downloadProgress.total}</p>
-		{/if}
+		<p>Loading ffmpeg...</p>
 	</div>
 {:else}
 	<div>
-		<VideoArea />
+		<VideoArea bind:file />
 		<TimelineArea bind:tracks />
 	</div>
 {/if}
