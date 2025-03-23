@@ -1,8 +1,9 @@
 import type { FFFSType, FFmpeg, LogEvent } from '@ffmpeg/ffmpeg';
 
-export const MOUNT_POINT = '/input';
+const MOUNT_POINT = '/input';
 
 export class FFmpegApi {
+	private mountedFile?: File;
 	private _enableLogging = false;
 
 	constructor(private readonly ffmpeg: FFmpeg) {
@@ -28,22 +29,31 @@ export class FFmpegApi {
 	}
 
 	private async useMountedFile<T>(file: File, body: (mountedFilePath: string) => Promise<T>) {
-		await this.ffmpeg.mount(
-			// Workaround for the FFFSType enum import which is not available at runtime
-			'WORKERFS' as FFFSType.WORKERFS,
-			{ files: [file] },
-			MOUNT_POINT
-		);
+		if (this.mountedFile !== file) {
+			await this.unmount();
 
-		try {
-			return await body(`${MOUNT_POINT}/${file.name}`);
-		} finally {
+			await this.ffmpeg.mount(
+				// Workaround for the FFFSType enum import which is not available at runtime
+				'WORKERFS' as FFFSType.WORKERFS,
+				{ files: [file] },
+				MOUNT_POINT
+			);
+
+			this.mountedFile = file;
+		}
+
+		return await body(`${MOUNT_POINT}/${file.name}`);
+	}
+
+	async unmount() {
+		if (this.mountedFile) {
 			await this.ffmpeg.unmount(MOUNT_POINT);
+			this.mountedFile = undefined;
 		}
 	}
 
 	async probe(file: File): Promise<FFprobeOutput> {
-		const jsonOutputFile = 'ffprobe-output.json';
+		const jsonOutputFile = `${file.name}-ffprobe.json`;
 
 		await this.useMountedFile(file, (mountedFilePath) =>
 			this.ffmpeg.ffprobe([
@@ -58,6 +68,26 @@ export class FFmpegApi {
 
 		const outputFileData = await this.ffmpeg.readFile(jsonOutputFile, 'utf8');
 		return JSON.parse(outputFileData as string);
+	}
+
+	async extractAudioPeaks(file: File, audioStreamId: number) {
+		const outputFile = `${file.name}-${audioStreamId}-pcm`;
+
+		await this.useMountedFile(file, (mountedFilePath) =>
+			this.ffmpeg.exec([
+				// Based on https://trac.ffmpeg.org/wiki/Waveform
+				...['-i', mountedFilePath],
+				// ...['-filter:a', 'aresample=2000'],
+				...['-map', `0:a:${audioStreamId}`],
+				...['-c:a', 'pcm_s8'],
+				...['-f', 'data'],
+				outputFile
+			])
+		);
+
+		const outputFileData = await this.ffmpeg.readFile(outputFile);
+
+		return new Int8Array(outputFileData as Uint8Array);
 	}
 }
 

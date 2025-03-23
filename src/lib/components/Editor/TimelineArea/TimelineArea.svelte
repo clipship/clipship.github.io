@@ -4,6 +4,7 @@
 
 	export interface TrackState {
 		isUsed: boolean;
+		pcmData?: Int8Array;
 	}
 
 	interface Props {
@@ -24,7 +25,7 @@
 	<div class="timeline">
 		{#each tracks as track}
 			<div class="track">
-				<TrackTimeline />
+				<TrackTimeline pcmData={track.pcmData} />
 			</div>
 		{/each}
 	</div>
@@ -36,16 +37,23 @@
 	.timeline-area {
 		display: grid;
 		grid-template-columns: 200px 1fr;
-		gap: 4px;
 		border: 1px solid scheme.var-color('primary');
 	}
 
+	.channels {
+		border-right: 1px solid scheme.var-color('primary', -1);
+	}
+
 	.timeline {
-		background-color: grey;
+		background-color: scheme.var-color('primary', -2);
 	}
 
 	.track {
 		height: 80px;
 		display: grid;
+
+		&:not(:first-child) {
+			border-top: 1px solid scheme.var-color('primary', -1);
+		}
 	}
 </style>

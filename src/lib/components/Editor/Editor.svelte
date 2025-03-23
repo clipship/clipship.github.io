@@ -34,6 +34,15 @@
 		tracks = audioStreams.map((audioStream) => ({
 			isUsed: true
 		}));
+
+		for (let i = 0; i < audioStreams.length; i++) {
+			const track = tracks[i];
+
+			ffmpeg.extractAudioPeaks(file, i).then((pcmData) => {
+				track.pcmData = pcmData;
+				console.log('Loaded peaks for stream', i);
+			});
+		}
 	}
 </script>
 
@@ -44,7 +53,9 @@
 {:else}
 	<div>
 		<VideoArea bind:file />
-		<TimelineArea bind:tracks />
+		{#if tracks.length > 0}
+			<TimelineArea bind:tracks />
+		{/if}
 	</div>
 {/if}
 
@@ -54,10 +65,7 @@
 	div {
 		display: grid;
 		grid-template-rows: 1fr auto;
-
-		padding: 4px;
 		gap: 4px;
-		border: 1px solid scheme.var-color('primary');
 
 		&.loading {
 			grid-template-rows: auto;

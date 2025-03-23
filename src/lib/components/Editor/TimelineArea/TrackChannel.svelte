@@ -17,7 +17,6 @@
 	@use '$lib/style/scheme';
 
 	div {
-		outline: 1px solid scheme.var-color('primary');
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
