@@ -42,8 +42,7 @@
 			const track = tracks[i];
 			const extraction = streamExtractions[i];
 
-			track.pcmData = extraction.pcmData;
-			track.audioBlob = extraction.audioBlob;
+			track.wavBuffer = extraction.wavBuffer;
 		}
 	}
 </script>

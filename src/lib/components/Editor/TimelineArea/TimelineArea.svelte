@@ -4,8 +4,7 @@
 
 	export interface TrackState {
 		isUsed: boolean;
-		pcmData?: Int8Array;
-		audioBlob?: Blob;
+		wavBuffer?: ArrayBuffer;
 	}
 
 	interface Props {
@@ -21,7 +20,7 @@
 			<div class="track">
 				<TrackChannel
 					bind:isUsed={track.isUsed}
-					audioBlob={track.audioBlob}
+					audioBuffer={track.wavBuffer}
 					name={'Track ' + (i + 1)}
 				/>
 			</div>
@@ -30,7 +29,7 @@
 	<div class="timeline">
 		{#each tracks as track}
 			<div class="track">
-				<TrackTimeline pcmData={track.pcmData} />
+				<TrackTimeline wavBuffer={track.wavBuffer} />
 			</div>
 		{/each}
 	</div>

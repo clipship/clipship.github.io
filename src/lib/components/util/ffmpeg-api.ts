@@ -73,8 +73,8 @@ export class FFmpegApi {
 	}
 
 	async extractAudioStreams(file: File, audioStreamIds: number[]) {
-		function getOutputFile(audioStreamId: number, extension: 'pcm' | 'opus') {
-			return `${file.name}-${audioStreamId}.${extension}`;
+		function getOutputFile(audioStreamId: number) {
+			return `${file.name}-${audioStreamId}.wav`;
 		}
 
 		await this.useMountedFile(file, (mountedFilePath) => {
@@ -84,23 +84,11 @@ export class FFmpegApi {
 				'-y',
 				...['-i', mountedFilePath],
 				...audioStreamIds.flatMap((audioStreamId) => [
-					// Extract low quality audio samples for peak visualization
-					...[
-						...['-map', `0:a:${audioStreamId}`],
-						// ...['-filter:a', 'aresample=2000'],
-						...['-c:a', 'pcm_s8'],
-						...['-f', 'data'],
-						getOutputFile(audioStreamId, 'pcm')
-					],
-
-					// Extract playable audio stream
-					...[
-						...['-map', `0:a:${audioStreamId}`],
-						...['-b:a', '96000'],
-						...['-c:a', 'libopus'],
-						...['-compression_level', '0'],
-						getOutputFile(audioStreamId, 'opus')
-					]
+					// Extract playable audio stream as WAV (16-bit, little endian)
+					...['-map', `0:a:${audioStreamId}`],
+					...['-c:a', 'pcm_s16le'],
+					'-bitexact', // Ensure that the WAV file header is the default size of 44 bytes
+					getOutputFile(audioStreamId)
 				])
 			]);
 		});
@@ -108,13 +96,11 @@ export class FFmpegApi {
 		const result: AudioStreamExtraction[] = [];
 
 		for (const audioStreamId of audioStreamIds) {
-			const pcmFileData = await this.ffmpeg.readFile(getOutputFile(audioStreamId, 'pcm'));
-			const audioBytes = await this.ffmpeg.readFile(getOutputFile(audioStreamId, 'opus'));
-			const audioBuffer = (audioBytes as Uint8Array).buffer as ArrayBuffer;
+			const audioBytes = await this.ffmpeg.readFile(getOutputFile(audioStreamId));
+			const audioBuffer = (audioBytes as Uint8Array).buffer;
 
 			result.push({
-				pcmData: new Int8Array(pcmFileData as Uint8Array),
-				audioBlob: new Blob([audioBuffer])
+				wavBuffer: audioBuffer as ArrayBuffer
 			});
 		}
 
@@ -122,9 +108,8 @@ export class FFmpegApi {
 	}
 }
 
-interface AudioStreamExtraction {
-	pcmData: Int8Array;
-	audioBlob: Blob;
+export interface AudioStreamExtraction {
+	wavBuffer: ArrayBuffer;
 }
 
 interface FFprobeStream {

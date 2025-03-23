@@ -1,28 +1,34 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import { createWAVDataViewS16LE } from './wav-data-view';
+
+	const INT_16_AMPLITUDE = 1 << 15;
 
 	interface Props {
-		pcmData?: Int8Array;
+		wavBuffer?: ArrayBuffer;
 	}
 
-	let { pcmData }: Props = $props();
+	let { wavBuffer }: Props = $props();
+
+	let samples = $derived(wavBuffer ? createWAVDataViewS16LE(wavBuffer) : undefined);
+
 	let canvas = $state<HTMLCanvasElement>();
 	let clientWidth = $state<number>(0);
 	let clientHeight = $state<number>(0);
 
 	$effect(() => {
-		if (canvas && pcmData && clientWidth && clientHeight) {
-			drawCanvas(canvas, pcmData);
+		if (canvas && samples && clientWidth && clientHeight) {
+			drawCanvas(canvas, samples);
 		}
 	});
 
-	function drawCanvas(canvas: HTMLCanvasElement, pcmData: Int8Array) {
+	function drawCanvas(canvas: HTMLCanvasElement, samples: Int16Array) {
 		const ctx = canvas.getContext('2d');
 		if (!ctx) throw new Error('Canvas context 2d is not available');
 
 		const centerY = clientHeight / 2;
 
-		const sampleCount = pcmData.length;
+		const sampleCount = samples.length;
 
 		ctx.strokeStyle = '#fff';
 		ctx.moveTo(0, centerY);
@@ -35,12 +41,12 @@
 			let windowSum = 0;
 
 			for (let i = 0; i < windowWidth; i++) {
-				windowSum += Math.abs(pcmData[sampleIndex - i]);
-				windowSum += Math.abs(pcmData[sampleIndex + i]);
+				windowSum += Math.abs(samples[sampleIndex - i]);
+				windowSum += Math.abs(samples[sampleIndex + i]);
 			}
 
 			const sample = windowSum / (windowWidth * 2);
-			const sampleFloat = sample / 127;
+			const sampleFloat = sample / INT_16_AMPLITUDE;
 
 			ctx.moveTo(x + 0.5, centerY + clientHeight * sampleFloat);
 			ctx.lineTo(x + 0.5, centerY - clientHeight * sampleFloat);
@@ -51,7 +57,7 @@
 </script>
 
 <div bind:clientWidth bind:clientHeight>
-	{#if !pcmData}
+	{#if !samples}
 		<p>Loading...</p>
 	{:else}
 		<canvas width={clientWidth} height={clientHeight} bind:this={canvas} transition:fade></canvas>

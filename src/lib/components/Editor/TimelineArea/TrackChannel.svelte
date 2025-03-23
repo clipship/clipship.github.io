@@ -2,12 +2,12 @@
 	export interface TrackChannelProps {
 		name: string;
 		isUsed: boolean;
-		audioBlob?: Blob;
+		audioBuffer?: ArrayBuffer;
 	}
 
-	let { name, isUsed = $bindable(), audioBlob }: TrackChannelProps = $props();
+	let { name, isUsed = $bindable(), audioBuffer }: TrackChannelProps = $props();
 
-	let blobUrl = $derived(audioBlob ? URL.createObjectURL(audioBlob) : undefined);
+	let blobUrl = $derived(audioBuffer ? URL.createObjectURL(new Blob([audioBuffer])) : undefined);
 </script>
 
 <div>
