@@ -5,6 +5,7 @@
 	export interface TrackState {
 		isUsed: boolean;
 		pcmData?: Int8Array;
+		audioBlob?: Blob;
 	}
 
 	interface Props {
@@ -18,7 +19,11 @@
 	<div class="channels">
 		{#each tracks as track, i}
 			<div class="track">
-				<TrackChannel bind:isUsed={track.isUsed} name={'Track ' + (i + 1)} />
+				<TrackChannel
+					bind:isUsed={track.isUsed}
+					audioBlob={track.audioBlob}
+					name={'Track ' + (i + 1)}
+				/>
 			</div>
 		{/each}
 	</div>

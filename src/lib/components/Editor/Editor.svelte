@@ -35,13 +35,15 @@
 			isUsed: true
 		}));
 
+		const audioStreamIds = audioStreams.map((_, id) => id);
+		const streamExtractions = await ffmpeg.extractAudioStreams(file, audioStreamIds);
+
 		for (let i = 0; i < audioStreams.length; i++) {
 			const track = tracks[i];
+			const extraction = streamExtractions[i];
 
-			ffmpeg.extractAudioPeaks(file, i).then((pcmData) => {
-				track.pcmData = pcmData;
-				console.log('Loaded peaks for stream', i);
-			});
+			track.pcmData = extraction.pcmData;
+			track.audioBlob = extraction.audioBlob;
 		}
 	}
 </script>

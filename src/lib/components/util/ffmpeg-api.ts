@@ -21,11 +21,13 @@ export class FFmpegApi {
 			} else {
 				this.ffmpeg.off('log', this.log);
 			}
+
+			this._enableLogging = enable;
 		}
 	}
 
 	private log(ev: LogEvent) {
-		console.log(ev.type, ev.message);
+		console.log(ev.message);
 	}
 
 	private async useMountedFile<T>(file: File, body: (mountedFilePath: string) => Promise<T>) {
@@ -57,7 +59,7 @@ export class FFmpegApi {
 
 		await this.useMountedFile(file, (mountedFilePath) =>
 			this.ffmpeg.ffprobe([
-				...['-v', 'quiet'],
+				...['-loglevel', 'warning'],
 				...['-print_format', 'json'],
 				'-show_format',
 				'-show_streams',
@@ -70,25 +72,59 @@ export class FFmpegApi {
 		return JSON.parse(outputFileData as string);
 	}
 
-	async extractAudioPeaks(file: File, audioStreamId: number) {
-		const outputFile = `${file.name}-${audioStreamId}-pcm`;
+	async extractAudioStreams(file: File, audioStreamIds: number[]) {
+		function getOutputFile(audioStreamId: number, extension: 'pcm' | 'opus') {
+			return `${file.name}-${audioStreamId}.${extension}`;
+		}
 
-		await this.useMountedFile(file, (mountedFilePath) =>
-			this.ffmpeg.exec([
-				// Based on https://trac.ffmpeg.org/wiki/Waveform
+		await this.useMountedFile(file, (mountedFilePath) => {
+			return this.ffmpeg.exec([
+				...['-loglevel', 'info'],
+				// Always overwrite files
+				'-y',
 				...['-i', mountedFilePath],
-				// ...['-filter:a', 'aresample=2000'],
-				...['-map', `0:a:${audioStreamId}`],
-				...['-c:a', 'pcm_s8'],
-				...['-f', 'data'],
-				outputFile
-			])
-		);
+				...audioStreamIds.flatMap((audioStreamId) => [
+					// Extract low quality audio samples for peak visualization
+					...[
+						...['-map', `0:a:${audioStreamId}`],
+						// ...['-filter:a', 'aresample=2000'],
+						...['-c:a', 'pcm_s8'],
+						...['-f', 'data'],
+						getOutputFile(audioStreamId, 'pcm')
+					],
 
-		const outputFileData = await this.ffmpeg.readFile(outputFile);
+					// Extract playable audio stream
+					...[
+						...['-map', `0:a:${audioStreamId}`],
+						...['-b:a', '96000'],
+						...['-c:a', 'libopus'],
+						...['-compression_level', '0'],
+						getOutputFile(audioStreamId, 'opus')
+					]
+				])
+			]);
+		});
 
-		return new Int8Array(outputFileData as Uint8Array);
+		const result: AudioStreamExtraction[] = [];
+
+		for (const audioStreamId of audioStreamIds) {
+			const pcmFileData = await this.ffmpeg.readFile(getOutputFile(audioStreamId, 'pcm'));
+			const audioBytes = await this.ffmpeg.readFile(getOutputFile(audioStreamId, 'opus'));
+			const audioBuffer = (audioBytes as Uint8Array).buffer as ArrayBuffer;
+
+			result.push({
+				pcmData: new Int8Array(pcmFileData as Uint8Array),
+				audioBlob: new Blob([audioBuffer])
+			});
+		}
+
+		return result;
 	}
+}
+
+interface AudioStreamExtraction {
+	pcmData: Int8Array;
+	audioBlob: Blob;
 }
 
 interface FFprobeStream {
