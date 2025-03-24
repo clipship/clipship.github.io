@@ -1,6 +1,7 @@
 <script lang="ts">
 	import TrackChannel from './TrackChannel.svelte';
 	import TrackTimeline from './TrackTimeline.svelte';
+	import type { WaveFormRange } from './wave-form';
 
 	export interface TrackState {
 		isUsed: boolean;
@@ -12,6 +13,11 @@
 	}
 
 	let { tracks = $bindable() }: Props = $props();
+
+	let range = $state<WaveFormRange>({
+		startFraction: 0,
+		endFraction: 1
+	});
 </script>
 
 <div class="timeline-area">
@@ -29,7 +35,7 @@
 	<div class="timeline">
 		{#each tracks as track}
 			<div class="track">
-				<TrackTimeline wavBuffer={track.wavBuffer} />
+				<TrackTimeline {range} wavBuffer={track.wavBuffer} />
 			</div>
 		{/each}
 	</div>

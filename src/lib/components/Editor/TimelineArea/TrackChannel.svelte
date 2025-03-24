@@ -13,9 +13,9 @@
 <div>
 	<span>{name}</span>
 
-	{#if blobUrl}
+	<!-- {#if blobUrl}
 		<audio src={blobUrl} controls></audio>
-	{/if}
+	{/if} -->
 
 	<input type="checkbox" bind:checked={isUsed} />
 </div>
