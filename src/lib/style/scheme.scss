@@ -18,8 +18,8 @@
 	#{color-key($name, +2)}: #{sass.adjust($color, $lightness: 30%)};
 }
 
-$primary: #ff472f;
-$secondary: #5031ff;
+$primary: hsl(7, 100%, 60%);
+$secondary: hsl(41, 100%, 60%);
 
 :root {
 	@include color('primary', $primary);

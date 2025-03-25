@@ -40,3 +40,37 @@ export function constrainCenteredInterval(interval: CenteredInterval): CenteredI
 
 	return { center, rangeFromCenter };
 }
+
+export function modifyIntervalZoomWithPivot(
+	interval: CenteredInterval,
+	delta: number,
+	pivotInView: number
+) {
+	const { start, end } = convertCenteredToRangeInterval(interval);
+	const pivotInInterval = start + (end - start) * pivotInView;
+
+	let zoom = Math.log(interval.rangeFromCenter);
+	zoom += delta;
+
+	const rangeFromCenter = Math.exp(zoom);
+
+	const { start: newStart, end: newEnd } = convertCenteredToRangeInterval({
+		center: interval.center,
+		rangeFromCenter: rangeFromCenter
+	});
+
+	const pivotInNewInterval = newStart + (newEnd - newStart) * pivotInView;
+
+	return constrainCenteredInterval({
+		center: interval.center + (pivotInInterval - pivotInNewInterval),
+		rangeFromCenter: rangeFromCenter
+	});
+}
+
+export function convertRangeToGlobalSpace(valueInRange: number, interval: RangeInterval) {
+	return interval.start + valueInRange * (interval.end - interval.start);
+}
+
+export function convertGlobalToRangeSpace(value: number, interval: RangeInterval) {
+	return (value - interval.start) / (interval.end - interval.start);
+}

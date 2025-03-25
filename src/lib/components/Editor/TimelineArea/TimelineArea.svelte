@@ -1,23 +1,28 @@
 <script lang="ts">
 	import { cubicOut } from 'svelte/easing';
 	import { Tween } from 'svelte/motion';
-	import TrackChannel from './TrackChannel.svelte';
-	import TrackTimeline from './TrackTimeline.svelte';
 	import {
 		constrainCenteredInterval,
 		convertCenteredToRangeInterval,
-		type CenteredInterval
+		modifyIntervalZoomWithPivot,
+		type CenteredInterval,
+		type RangeInterval
 	} from './interval-space';
+	import TimelineMarkingBar from './TimelineMarkingBar.svelte';
+	import TimelineMarkingOverlay from './TimelineMarkingOverlay.svelte';
+	import TrackChannel from './TrackChannel.svelte';
+	import TrackTimeline from './TrackTimeline.svelte';
 
 	const MAX_WHEEL_DELTA = 3;
 	const ZOOM_AMOUNT = 0.2;
-	const ZOOM_TWEEN_DURATION_MS = 300;
+	const ZOOM_TWEEN_DURATION_MS = 200;
 
 	const INITIAL_CENTERED_INTERVAL: CenteredInterval = {
 		center: 0.5,
 		rangeFromCenter: 0.5
 	};
 
+	const BITMASK_LEFT_MOUSE_BUTTON = 0b1;
 	const BITMASK_MIDDLE_MOUSE_BUTTON = 0b100;
 
 	export interface TrackState {
@@ -30,6 +35,9 @@
 	}
 
 	let { tracks = $bindable() }: Props = $props();
+
+	let playingHeadPosition = $state(0);
+	let markingRange = $state<RangeInterval>({ start: 0.4, end: 0.6 });
 
 	let transform = $state<CenteredInterval>(INITIAL_CENTERED_INTERVAL);
 	let transformAsRange = new Tween(convertCenteredToRangeInterval(INITIAL_CENTERED_INTERVAL), {
@@ -44,25 +52,7 @@
 	let timelineWidth = $state(0);
 
 	function modifyZoom(delta: number, pivotInView: number) {
-		const { start, end } = convertCenteredToRangeInterval(transform);
-		const pivotInInterval = start + (end - start) * pivotInView;
-
-		let zoom = Math.log(transform.rangeFromCenter);
-		zoom += delta * ZOOM_AMOUNT;
-
-		const rangeFromCenter = Math.exp(zoom);
-
-		const { start: newStart, end: newEnd } = convertCenteredToRangeInterval({
-			center: transform.center,
-			rangeFromCenter: rangeFromCenter
-		});
-
-		const pivotInNewInterval = newStart + (newEnd - newStart) * pivotInView;
-
-		transform = constrainCenteredInterval({
-			center: transform.center + (pivotInInterval - pivotInNewInterval),
-			rangeFromCenter: rangeFromCenter
-		});
+		transform = modifyIntervalZoomWithPivot(transform, delta * ZOOM_AMOUNT, pivotInView);
 	}
 
 	function handleWheel(ev: WheelEvent) {
@@ -72,6 +62,17 @@
 		const pivot = ev.offsetX / timelineWidth;
 
 		modifyZoom(Math.sign(delta) * amount, pivot);
+	}
+
+	function processLeftMouseButton(ev: MouseEvent) {
+		if ((ev.buttons & BITMASK_LEFT_MOUSE_BUTTON) > 0) {
+			const { start, end } = transformAsRange.current;
+
+			const mouseInViewFraction = ev.offsetX / timelineWidth;
+			const mouseInInterval = start + mouseInViewFraction * (end - start);
+
+			playingHeadPosition = mouseInInterval;
+		}
 	}
 
 	function handleMouseMove(ev: MouseEvent) {
@@ -85,8 +86,15 @@
 				rangeFromCenter: transform.rangeFromCenter
 			});
 		}
+
+		processLeftMouseButton(ev);
 	}
 </script>
+
+<div class="marking-bar">
+	<div class="placeholder-cell"></div>
+	<TimelineMarkingBar visibleRange={transformAsRange.current} bind:markingRange />
+</div>
 
 <div class="timeline-area">
 	<div class="channels">
@@ -105,9 +113,16 @@
 		class="timeline"
 		bind:clientWidth={timelineWidth}
 		onwheel={handleWheel}
+		onmousedown={processLeftMouseButton}
 		onmousemove={handleMouseMove}
 		role="presentation"
 	>
+		<TimelineMarkingOverlay
+			visibleRange={transformAsRange.current}
+			{playingHeadPosition}
+			{markingRange}
+		/>
+
 		{#each tracks as track}
 			<div class="track">
 				<TrackTimeline range={transformAsRange.current} wavBuffer={track.wavBuffer} />
@@ -119,9 +134,23 @@
 <style lang="scss">
 	@use '$lib/style/scheme';
 
+	$channel-width: 120px;
+
+	.marking-bar,
 	.timeline-area {
 		display: grid;
-		grid-template-columns: 200px 1fr;
+		grid-template-columns: $channel-width 1fr;
+	}
+
+	.marking-bar {
+		border: 1px solid scheme.var-color('secondary');
+	}
+
+	.placeholder-cell {
+		border-right: 1px solid scheme.var-color('secondary');
+	}
+
+	.timeline-area {
 		border: 1px solid scheme.var-color('primary');
 	}
 
@@ -130,11 +159,12 @@
 	}
 
 	.timeline {
+		position: relative;
 		background-color: scheme.var-color('primary', -2);
 	}
 
 	.track {
-		height: 80px;
+		height: 120px;
 		display: grid;
 
 		&:not(:first-child) {
