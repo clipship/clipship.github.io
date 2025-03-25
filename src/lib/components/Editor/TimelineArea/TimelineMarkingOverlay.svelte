@@ -43,26 +43,27 @@
 		> * {
 			position: absolute;
 			height: 100%;
-			transform: translateX(var(--x));
 		}
 	}
 
 	.playing-head {
 		width: 1px;
 		background-color: white;
+		transform: translateX(calc(var(--x) - 0.5px));
 	}
 
 	.boundary {
-		width: 100%;
 		backdrop-filter: grayscale(1) brightness(50%);
 
 		&.start {
-			right: 100%;
+			left: -1.5px;
+			width: calc(var(--x));
 			border-right: 1px solid scheme.var-color('text');
 		}
 
 		&.end {
-			left: 0;
+			left: calc(var(--x) - 0.5px);
+			right: 0;
 			border-left: 1px solid scheme.var-color('text');
 		}
 	}

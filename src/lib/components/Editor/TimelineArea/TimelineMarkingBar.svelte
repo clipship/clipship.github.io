@@ -37,8 +37,10 @@
 		return (ev: MouseEvent) => {
 			ev.preventDefault();
 
-			updateBoundingClientRect();
-			dragging = draggable;
+			if (ev.buttons === 1) {
+				updateBoundingClientRect();
+				dragging = draggable;
+			}
 		};
 	}
 
@@ -66,7 +68,7 @@
 	function onBarMouseDown(ev: MouseEvent) {
 		ev.preventDefault();
 
-		if (ev.target === wrapper) {
+		if (ev.buttons === 1 && ev.target === wrapper) {
 			updateBoundingClientRect();
 
 			const mouseInInterval = convertEventToMouseInInterval(ev);
@@ -121,9 +123,7 @@
 		overflow: hidden;
 
 		height: 20px;
-		background-color: scheme.var-color('secondary', -2);
-
-		cursor: text;
+		cursor: copy;
 	}
 
 	.marking {
@@ -140,7 +140,7 @@
 		}
 
 		&.start {
-			left: -$marking-width;
+			left: calc(-1.5px - $marking-width);
 			border-radius: 100vw 0 0 100vw;
 			cursor: w-resize;
 		}

@@ -66,7 +66,7 @@
 	div {
 		display: grid;
 		grid-template-rows: 1fr auto;
-		gap: 4px;
+		gap: 16px;
 
 		&.loading {
 			grid-template-rows: auto;

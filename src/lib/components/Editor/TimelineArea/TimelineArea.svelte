@@ -49,7 +49,15 @@
 		transformAsRange.set(convertCenteredToRangeInterval(transform));
 	});
 
+	let timelineElement = $state<HTMLElement>();
 	let timelineWidth = $state(0);
+	let timelineBoundingRect = $state<DOMRect>();
+
+	$effect(() => {
+		if (timelineElement && timelineWidth) {
+			timelineBoundingRect = timelineElement.getBoundingClientRect();
+		}
+	});
 
 	function modifyZoom(delta: number, pivotInView: number) {
 		transform = modifyIntervalZoomWithPivot(transform, delta * ZOOM_AMOUNT, pivotInView);
@@ -59,23 +67,23 @@
 		const delta = ev.deltaY;
 		const amount = Math.min(Math.abs(delta), MAX_WHEEL_DELTA) / MAX_WHEEL_DELTA;
 
-		const pivot = ev.offsetX / timelineWidth;
+		const pivot = (ev.clientX - timelineBoundingRect!.x) / timelineWidth;
 
 		modifyZoom(Math.sign(delta) * amount, pivot);
 	}
 
-	function processLeftMouseButton(ev: MouseEvent) {
+	function processPlayingHeadDragging(ev: MouseEvent) {
 		if ((ev.buttons & BITMASK_LEFT_MOUSE_BUTTON) > 0) {
 			const { start, end } = transformAsRange.current;
 
-			const mouseInViewFraction = ev.offsetX / timelineWidth;
+			const mouseInViewFraction = (ev.clientX - timelineBoundingRect!.x) / timelineWidth;
 			const mouseInInterval = start + mouseInViewFraction * (end - start);
 
 			playingHeadPosition = mouseInInterval;
 		}
 	}
 
-	function handleMouseMove(ev: MouseEvent) {
+	function handlePanning(ev: MouseEvent) {
 		if ((ev.buttons & BITMASK_MIDDLE_MOUSE_BUTTON) > 0) {
 			const deltaFractionUnscaled = (-2 * ev.movementX) / timelineWidth;
 
@@ -86,48 +94,48 @@
 				rangeFromCenter: transform.rangeFromCenter
 			});
 		}
-
-		processLeftMouseButton(ev);
 	}
 </script>
 
-<div class="marking-bar">
-	<div class="placeholder-cell"></div>
-	<TimelineMarkingBar visibleRange={transformAsRange.current} bind:markingRange />
-</div>
-
-<div class="timeline-area">
-	<div class="channels">
-		{#each tracks as track, i}
-			<div class="track">
-				<TrackChannel
-					bind:isUsed={track.isUsed}
-					audioBuffer={track.wavBuffer}
-					name={'Track ' + (i + 1)}
-				/>
-			</div>
-		{/each}
+<div class="wrapper" onmousemove={handlePanning} onwheel={handleWheel} role="presentation">
+	<div class="marking-bar">
+		<div class="placeholder-cell"></div>
+		<TimelineMarkingBar visibleRange={transformAsRange.current} bind:markingRange />
 	</div>
 
-	<div
-		class="timeline"
-		bind:clientWidth={timelineWidth}
-		onwheel={handleWheel}
-		onmousedown={processLeftMouseButton}
-		onmousemove={handleMouseMove}
-		role="presentation"
-	>
-		<TimelineMarkingOverlay
-			visibleRange={transformAsRange.current}
-			{playingHeadPosition}
-			{markingRange}
-		/>
+	<div class="timeline-area">
+		<div class="channels">
+			{#each tracks as track, i}
+				<div class="track">
+					<TrackChannel
+						bind:isUsed={track.isUsed}
+						audioBuffer={track.wavBuffer}
+						name={'Track ' + (i + 1)}
+					/>
+				</div>
+			{/each}
+		</div>
 
-		{#each tracks as track}
-			<div class="track">
-				<TrackTimeline range={transformAsRange.current} wavBuffer={track.wavBuffer} />
-			</div>
-		{/each}
+		<div
+			class="timeline"
+			bind:clientWidth={timelineWidth}
+			bind:this={timelineElement}
+			onmousedown={processPlayingHeadDragging}
+			onmousemove={processPlayingHeadDragging}
+			role="presentation"
+		>
+			<TimelineMarkingOverlay
+				visibleRange={transformAsRange.current}
+				{playingHeadPosition}
+				{markingRange}
+			/>
+
+			{#each tracks as track}
+				<div class="track">
+					<TrackTimeline range={transformAsRange.current} wavBuffer={track.wavBuffer} />
+				</div>
+			{/each}
+		</div>
 	</div>
 </div>
 
@@ -143,15 +151,16 @@
 	}
 
 	.marking-bar {
-		border: 1px solid scheme.var-color('secondary');
+		border: 1px solid scheme.var-color('primary');
 	}
 
 	.placeholder-cell {
-		border-right: 1px solid scheme.var-color('secondary');
+		border-right: 1px solid scheme.var-color('primary', -1);
 	}
 
 	.timeline-area {
 		border: 1px solid scheme.var-color('primary');
+		border-top: none;
 	}
 
 	.channels {
