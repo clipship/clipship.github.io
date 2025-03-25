@@ -1,3 +1,5 @@
+import type { RangeInterval } from './interval-space';
+
 const RIFF_HEADER_LENGTH = 44;
 const INT_16_AMPLITUDE = 1 << 15;
 
@@ -69,11 +71,6 @@ function generateSampleBins(samples: SampleArray, binCount: number) {
 	return result;
 }
 
-export interface WaveFormRange {
-	startFraction: number;
-	endFraction: number;
-}
-
 export class WaveForm {
 	private readonly mipMap: MipMap;
 
@@ -81,17 +78,20 @@ export class WaveForm {
 		this.mipMap = generateMipMap(samples, mipMapLevels);
 	}
 
-	collect(range: WaveFormRange, resolution: number) {
-		const { startFraction, endFraction } = range;
-		const smallestArray = this.getMipMapArray(resolution / (endFraction - startFraction));
+	collect(range: RangeInterval, resolution: number) {
+		const { start, end } = range;
+		const smallestArray = this.getMipMapArray(resolution / (end - start));
 
-		const offset = Math.floor(startFraction * smallestArray.byteLength);
+		// In case of the raw samples (level 0), "smallestArray.byteOffset" trims the RIFF header
+		const byteOffset = start * smallestArray.byteLength + smallestArray.byteOffset;
+
+		// Int16Array must start at a multiple of 2
+		const snappedByteOffset = Math.floor(byteOffset / 2) * 2;
 
 		const arrayFraction = new Int16Array(
 			smallestArray.buffer,
-			// Int16Array must start at a multiple of 2
-			Math.round(offset / 2) * 2,
-			Math.floor((endFraction - startFraction) * smallestArray.length)
+			snappedByteOffset,
+			Math.ceil((end - start) * smallestArray.length)
 		);
 
 		return generateSampleBins(arrayFraction, resolution);

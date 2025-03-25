@@ -18,11 +18,16 @@
 	#{color-key($name, +2)}: #{sass.adjust($color, $lightness: 30%)};
 }
 
+$primary: #ff472f;
+$secondary: #5031ff;
+
 :root {
-	@include color('primary', #ff472f);
-	@include color('secondary', #5031ff);
+	@include color('primary', $primary);
+	@include color('secondary', $secondary);
 
 	#{color-key('background')}: #16141b;
 	#{color-key('text')}: white;
 	#{color-key('text-dark')}: var-color('background');
+
+	--color-wave-form: #{sass.adjust($primary, $lightness: 20%)};
 }

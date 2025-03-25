@@ -1,10 +1,10 @@
 <script lang="ts">
 	import TrackWaveForm from './TrackWaveForm.svelte';
-	import type { WaveFormRange } from './wave-form';
+	import type { RangeInterval } from './interval-space';
 
 	interface Props {
 		wavBuffer?: ArrayBuffer;
-		range: WaveFormRange;
+		range: RangeInterval;
 	}
 
 	let { wavBuffer, range }: Props = $props();
