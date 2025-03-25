@@ -43,15 +43,25 @@
 
 	let timelineWidth = $state(0);
 
-	function modifyZoom(delta: number) {
+	function modifyZoom(delta: number, pivotInView: number) {
+		const { start, end } = convertCenteredToRangeInterval(transform);
+		const pivotInInterval = start + (end - start) * pivotInView;
+
 		let zoom = Math.log(transform.rangeFromCenter);
 		zoom += delta * ZOOM_AMOUNT;
 
-		const newRange = Math.exp(zoom);
+		const rangeFromCenter = Math.exp(zoom);
+
+		const { start: newStart, end: newEnd } = convertCenteredToRangeInterval({
+			center: transform.center,
+			rangeFromCenter: rangeFromCenter
+		});
+
+		const pivotInNewInterval = newStart + (newEnd - newStart) * pivotInView;
 
 		transform = constrainCenteredInterval({
-			center: transform.center,
-			rangeFromCenter: newRange
+			center: transform.center + (pivotInInterval - pivotInNewInterval),
+			rangeFromCenter: rangeFromCenter
 		});
 	}
 
@@ -59,7 +69,9 @@
 		const delta = ev.deltaY;
 		const amount = Math.min(Math.abs(delta), MAX_WHEEL_DELTA) / MAX_WHEEL_DELTA;
 
-		modifyZoom(Math.sign(delta) * amount);
+		const pivot = ev.offsetX / timelineWidth;
+
+		modifyZoom(Math.sign(delta) * amount, pivot);
 	}
 
 	function handleMouseMove(ev: MouseEvent) {
