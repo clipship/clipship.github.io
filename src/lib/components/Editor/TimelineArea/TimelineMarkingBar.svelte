@@ -93,7 +93,7 @@
 >
 	{#if markingRangeInView}
 		<div
-			class="marking start"
+			class="handle start"
 			class:dragging={dragging === 'start'}
 			style="--x: {markingRangeInView.start * clientWidth}px;"
 			role="slider"
@@ -102,7 +102,7 @@
 			onmousedown={eventStartDragging('start')}
 		></div>
 		<div
-			class="marking end"
+			class="handle end"
 			class:dragging={dragging === 'end'}
 			style="--x: {markingRangeInView.end * clientWidth}px;"
 			role="slider"
@@ -116,7 +116,8 @@
 <style lang="scss">
 	@use '$lib/style/scheme';
 
-	$marking-width: 20px;
+	$handle-width: 20px;
+	$handle-interaction-padding: 20px;
 
 	.wrapper {
 		position: relative;
@@ -126,21 +127,21 @@
 		cursor: copy;
 	}
 
-	.marking {
+	.handle {
 		position: absolute;
 		height: 100%;
-		width: $marking-width;
+		width: $handle-width;
 
-		background-color: scheme.var-color('secondary', 1);
+		background-color: scheme.var-color('secondary');
 		transform: translateX(var(--x));
 
 		&:hover,
 		&.dragging {
-			background-color: white;
+			background-color: scheme.var-color('secondary', 1);
 		}
 
 		&.start {
-			left: calc(-1.5px - $marking-width);
+			left: calc(-1.5px - $handle-width);
 			border-radius: 100vw 0 0 100vw;
 			cursor: w-resize;
 		}
@@ -148,6 +149,15 @@
 		&.end {
 			border-radius: 0 100vw 100vw 0;
 			cursor: e-resize;
+		}
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: -$handle-interaction-padding;
+			right: -$handle-interaction-padding;
 		}
 	}
 </style>

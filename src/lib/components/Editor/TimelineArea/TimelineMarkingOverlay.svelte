@@ -58,13 +58,13 @@
 		&.start {
 			left: -1.5px;
 			width: calc(var(--x));
-			border-right: 1px solid scheme.var-color('text');
+			border-right: 1px solid scheme.var-color('secondary', 1);
 		}
 
 		&.end {
 			left: calc(var(--x) - 0.5px);
 			right: 0;
-			border-left: 1px solid scheme.var-color('text');
+			border-left: 1px solid scheme.var-color('secondary', 1);
 		}
 	}
 </style>
