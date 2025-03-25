@@ -4,20 +4,16 @@
 	interface Props {
 		playingHeadPosition: number;
 		visibleRange: RangeInterval;
-		markingRange?: RangeInterval;
+		markingRange: RangeInterval;
 	}
 
 	let { playingHeadPosition, visibleRange, markingRange }: Props = $props();
 
 	let positionInView = $derived(convertGlobalToRangeSpace(playingHeadPosition, visibleRange));
-	let markingRangeInView = $derived<RangeInterval | undefined>(
-		markingRange
-			? {
-					start: convertGlobalToRangeSpace(markingRange.start, visibleRange),
-					end: convertGlobalToRangeSpace(markingRange.end, visibleRange)
-				}
-			: undefined
-	);
+	let markingRangeInView = $derived<RangeInterval>({
+		start: convertGlobalToRangeSpace(markingRange.start, visibleRange),
+		end: convertGlobalToRangeSpace(markingRange.end, visibleRange)
+	});
 
 	let clientWidth = $state(0);
 	let clientHeight = $state(0);
@@ -26,10 +22,8 @@
 <div class="wrapper" bind:clientWidth bind:clientHeight>
 	<div class="playing-head" style="--x: {positionInView * clientWidth}px;"></div>
 
-	{#if markingRangeInView}
-		<div class="boundary start" style="--x: {markingRangeInView.start * clientWidth}px;"></div>
-		<div class="boundary end" style="--x: {markingRangeInView.end * clientWidth}px;"></div>
-	{/if}
+	<div class="boundary start" style="--x: {markingRangeInView.start * clientWidth}px;"></div>
+	<div class="boundary end" style="--x: {markingRangeInView.end * clientWidth}px;"></div>
 </div>
 
 <style lang="scss">
