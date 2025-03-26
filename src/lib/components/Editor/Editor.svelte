@@ -2,8 +2,9 @@
 	import { browser } from '$app/environment';
 	import type { FFmpegApi } from '../util/ffmpeg-api';
 	import { useFFmpeg } from '../util/FFmpegProvider.svelte';
-	import TimelineArea, { type TrackState } from './TimelineArea/TimelineArea.svelte';
-	import VideoArea from './VideoArea.svelte';
+	import EditorLoaded from './EditorLoaded.svelte';
+	import FilePicker from './FilePicker.svelte';
+	import { type TrackState } from './TimelineArea/TimelineArea.svelte';
 
 	const { ffmpeg, startLoading } = useFFmpeg();
 
@@ -51,12 +52,13 @@
 	<div class="loading">
 		<p>Loading ffmpeg...</p>
 	</div>
+{:else if !file}
+	<div class="loading">
+		<FilePicker onPickFile={(pickedFile) => (file = pickedFile)} />
+	</div>
 {:else}
 	<div>
-		<VideoArea bind:file />
-		{#if tracks.length > 0}
-			<TimelineArea bind:tracks />
-		{/if}
+		<EditorLoaded {file} bind:tracks />
 	</div>
 {/if}
 
@@ -65,11 +67,9 @@
 
 	div {
 		display: grid;
-		grid-template-rows: 1fr auto;
-		gap: 16px;
 
 		&.loading {
-			grid-template-rows: auto;
+			border: 1px solid scheme.var-color('primary');
 			place-content: center;
 		}
 	}

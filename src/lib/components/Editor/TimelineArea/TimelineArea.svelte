@@ -32,12 +32,15 @@
 
 	interface Props {
 		tracks: TrackState[];
+		playingHeadPosition: number;
+		markingRange: RangeInterval;
 	}
 
-	let { tracks = $bindable() }: Props = $props();
-
-	let playingHeadPosition = $state(0);
-	let markingRange = $state<RangeInterval>({ start: 0, end: 1 });
+	let {
+		tracks = $bindable(),
+		playingHeadPosition = $bindable(),
+		markingRange = $bindable()
+	}: Props = $props();
 
 	let transform = $state<CenteredInterval>(INITIAL_CENTERED_INTERVAL);
 	let transformAsRange = new Tween(convertCenteredToRangeInterval(INITIAL_CENTERED_INTERVAL), {

@@ -21,7 +21,6 @@
 	let wrapper = $state<HTMLElement>();
 	let boundingRect = $state<DOMRect>();
 	let clientWidth = $state(0);
-	let clientHeight = $state(0);
 
 	type Draggable = 'start' | 'end';
 
@@ -87,7 +86,6 @@
 	class="wrapper"
 	bind:this={wrapper}
 	bind:clientWidth
-	bind:clientHeight
 	role="presentation"
 	onmousedown={onBarMouseDown}
 >
