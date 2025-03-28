@@ -10,6 +10,7 @@
 	} from './interval-space';
 	import TimelineMarkingBar from './TimelineMarkingBar.svelte';
 	import TimelineMarkingOverlay from './TimelineMarkingOverlay.svelte';
+	import TimelinePlayheadBar from './TimelinePlayheadBar.svelte';
 	import TrackChannel from './TrackChannel.svelte';
 	import TrackTimeline from './TrackTimeline.svelte';
 
@@ -105,7 +106,11 @@
 <div class="wrapper" onmousemove={handlePanning} onwheel={handleWheel} role="presentation">
 	<div class="marking-bar">
 		<div class="placeholder-cell"></div>
-		<TimelineMarkingBar visibleRange={transformAsRange.current} bind:markingRange />
+		<TimelinePlayheadBar
+			visibleRange={transformAsRange.current}
+			bind:playhead={playheadPosition}
+			mediaPlayhead={mediaPlayheadPosition}
+		/>
 	</div>
 
 	<div class="timeline-area">
@@ -143,6 +148,11 @@
 			{/each}
 		</div>
 	</div>
+
+	<div class="marking-bar">
+		<div class="placeholder-cell"></div>
+		<TimelineMarkingBar visibleRange={transformAsRange.current} bind:markingRange />
+	</div>
 </div>
 
 <style lang="scss">
@@ -167,6 +177,7 @@
 	.timeline-area {
 		border: 1px solid scheme.var-color('primary');
 		border-top: none;
+		border-bottom: none;
 	}
 
 	.channels {

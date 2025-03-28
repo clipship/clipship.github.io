@@ -1,8 +1,8 @@
 <script lang="ts">
+	import InteractiveTimelineBar, { timelineA11y } from './InteractiveTimelineBar.svelte';
 	import {
 		constrainRangeInterval,
 		convertGlobalToRangeSpace,
-		convertRangeToGlobalSpace,
 		type RangeInterval
 	} from './interval-space';
 
@@ -18,43 +18,11 @@
 		end: convertGlobalToRangeSpace(markingRange.end, visibleRange)
 	});
 
-	let wrapper = $state<HTMLElement>();
-	let boundingRect = $state<DOMRect>();
-	let clientWidth = $state(0);
-
 	type Draggable = 'start' | 'end';
 
 	let dragging = $state<Draggable>();
 
-	function updateBoundingClientRect() {
-		if (!wrapper) throw new Error('Wrapper element is unbound');
-
-		boundingRect = wrapper.getBoundingClientRect();
-	}
-
-	function eventStartDragging(draggable: Draggable) {
-		return (ev: MouseEvent) => {
-			ev.preventDefault();
-
-			if (ev.buttons === 1) {
-				updateBoundingClientRect();
-				dragging = draggable;
-			}
-		};
-	}
-
-	function convertEventToMouseInInterval(ev: MouseEvent) {
-		if (!boundingRect) throw new Error('Bounding rect is not yet determined');
-
-		const mouseX = ev.clientX - boundingRect.left;
-		const mouseInViewFraction = Math.min(Math.max(mouseX / boundingRect.width, 0), 1);
-
-		return convertRangeToGlobalSpace(mouseInViewFraction, visibleRange);
-	}
-
-	function handleDragging(ev: MouseEvent) {
-		const mouseInInterval = convertEventToMouseInInterval(ev);
-
+	function onDrag(mouseInInterval: number) {
 		if (dragging === 'start') {
 			markingRange.start = Math.min(mouseInInterval, markingRange.end);
 		} else if (dragging === 'end') {
@@ -64,66 +32,42 @@
 		markingRange = constrainRangeInterval(markingRange);
 	}
 
-	function onBarMouseDown(ev: MouseEvent) {
-		ev.preventDefault();
-
-		if (ev.buttons === 1 && ev.target === wrapper) {
-			updateBoundingClientRect();
-
-			const mouseInInterval = convertEventToMouseInInterval(ev);
+	function onBarInteract(ev: MouseEvent, mouseInInterval: number) {
+		if (ev.buttons === 1) {
 			markingRange = { start: mouseInInterval, end: mouseInInterval };
 			dragging = 'end';
 		}
 	}
 </script>
 
-<svelte:window
-	on:mousemove={dragging ? handleDragging : undefined}
-	on:mouseup={() => (dragging = undefined)}
-/>
-
-<div
-	class="wrapper"
-	bind:this={wrapper}
-	bind:clientWidth
-	role="presentation"
-	onmousedown={onBarMouseDown}
->
-	{#if markingRangeInView}
+<InteractiveTimelineBar bind:dragging {visibleRange} {onBarInteract} {onDrag} cursor="copy">
+	{#snippet children(clientWidth, eventStartDragging)}
 		<div
 			class="handle start"
 			class:dragging={dragging === 'start'}
 			style="--x: {markingRangeInView.start * clientWidth}px;"
-			role="slider"
-			tabindex="0"
-			aria-valuenow={markingRangeInView.start}
-			onmousedown={eventStartDragging('start')}
+			use:timelineA11y={{
+				value: markingRange.start,
+				onmousedown: eventStartDragging('start')
+			}}
 		></div>
 		<div
 			class="handle end"
 			class:dragging={dragging === 'end'}
 			style="--x: {markingRangeInView.end * clientWidth}px;"
-			role="slider"
-			tabindex="0"
-			aria-valuenow={markingRangeInView.start}
-			onmousedown={eventStartDragging('end')}
+			use:timelineA11y={{
+				value: markingRange.end,
+				onmousedown: eventStartDragging('end')
+			}}
 		></div>
-	{/if}
-</div>
+	{/snippet}
+</InteractiveTimelineBar>
 
 <style lang="scss">
 	@use '$lib/style/scheme';
 
 	$handle-width: 20px;
 	$handle-interaction-padding: 20px;
-
-	.wrapper {
-		position: relative;
-		overflow: hidden;
-
-		height: 20px;
-		cursor: copy;
-	}
 
 	.handle {
 		position: absolute;
