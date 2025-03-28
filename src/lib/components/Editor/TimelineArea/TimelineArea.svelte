@@ -32,13 +32,15 @@
 
 	interface Props {
 		tracks: TrackState[];
-		playingHeadPosition: number;
+		mediaPlayheadPosition: number;
+		playheadPosition: number;
 		markingRange: RangeInterval;
 	}
 
 	let {
 		tracks = $bindable(),
-		playingHeadPosition = $bindable(),
+		mediaPlayheadPosition,
+		playheadPosition = $bindable(),
 		markingRange = $bindable()
 	}: Props = $props();
 
@@ -75,14 +77,14 @@
 		modifyZoom(Math.sign(delta) * amount, pivot);
 	}
 
-	function processPlayingHeadDragging(ev: MouseEvent) {
+	function processplayheadDragging(ev: MouseEvent) {
 		if ((ev.buttons & BITMASK_LEFT_MOUSE_BUTTON) > 0) {
 			const { start, end } = transformAsRange.current;
 
 			const mouseInViewFraction = (ev.clientX - timelineBoundingRect!.x) / timelineWidth;
 			const mouseInInterval = start + mouseInViewFraction * (end - start);
 
-			playingHeadPosition = mouseInInterval;
+			playheadPosition = mouseInInterval;
 		}
 	}
 
@@ -123,13 +125,14 @@
 			class="timeline"
 			bind:clientWidth={timelineWidth}
 			bind:this={timelineElement}
-			onmousedown={processPlayingHeadDragging}
-			onmousemove={processPlayingHeadDragging}
+			onmousedown={processplayheadDragging}
+			onmousemove={processplayheadDragging}
 			role="presentation"
 		>
 			<TimelineMarkingOverlay
 				visibleRange={transformAsRange.current}
-				{playingHeadPosition}
+				{mediaPlayheadPosition}
+				{playheadPosition}
 				{markingRange}
 			/>
 

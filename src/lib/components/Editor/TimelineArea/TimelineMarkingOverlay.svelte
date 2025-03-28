@@ -2,14 +2,19 @@
 	import { convertGlobalToRangeSpace, type RangeInterval } from './interval-space';
 
 	interface Props {
-		playingHeadPosition: number;
+		mediaPlayheadPosition: number;
+		playheadPosition: number;
 		visibleRange: RangeInterval;
 		markingRange: RangeInterval;
 	}
 
-	let { playingHeadPosition, visibleRange, markingRange }: Props = $props();
+	let { mediaPlayheadPosition, playheadPosition, visibleRange, markingRange }: Props = $props();
 
-	let positionInView = $derived(convertGlobalToRangeSpace(playingHeadPosition, visibleRange));
+	let mediaPositionInView = $derived(
+		convertGlobalToRangeSpace(mediaPlayheadPosition, visibleRange)
+	);
+
+	let positionInView = $derived(convertGlobalToRangeSpace(playheadPosition, visibleRange));
 	let markingRangeInView = $derived<RangeInterval>({
 		start: convertGlobalToRangeSpace(markingRange.start, visibleRange),
 		end: convertGlobalToRangeSpace(markingRange.end, visibleRange)
@@ -20,7 +25,8 @@
 </script>
 
 <div class="wrapper" bind:clientWidth bind:clientHeight>
-	<div class="playing-head" style="--x: {positionInView * clientWidth}px;"></div>
+	<div class="playhead media" style="--x: {mediaPositionInView * clientWidth}px;"></div>
+	<div class="playhead" style="--x: {positionInView * clientWidth}px;"></div>
 
 	<div class="boundary start" style="--x: {markingRangeInView.start * clientWidth}px;"></div>
 	<div class="boundary end" style="--x: {markingRangeInView.end * clientWidth}px;"></div>
@@ -46,10 +52,14 @@
 		}
 	}
 
-	.playing-head {
+	.playhead {
 		width: 1px;
 		background-color: white;
-		transform: translateX(calc(var(--x) - 0.5px));
+		transform: translateX(var(--x));
+
+		&.media {
+			background-color: scheme.var-color('primary', 0);
+		}
 	}
 
 	.boundary {

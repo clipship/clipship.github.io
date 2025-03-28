@@ -1,16 +1,25 @@
 <script lang="ts">
 	interface Props {
 		file: File;
+
+		paused: boolean;
+		currentTime: number;
+		readonly duration: number;
 	}
 
-	let { file: pickedFile }: Props = $props();
+	let {
+		file,
+		paused = $bindable(),
+		currentTime = $bindable(),
+		duration = $bindable()
+	}: Props = $props();
 
-	let pickedFileBlobUrl = $derived(URL.createObjectURL(pickedFile));
+	let fileBlobUrl = $derived(URL.createObjectURL(file));
 </script>
 
 <div>
 	<!-- svelte-ignore a11y_media_has_caption -->
-	<video src={pickedFileBlobUrl} controls></video>
+	<video src={fileBlobUrl} controls muted bind:paused bind:currentTime bind:duration></video>
 </div>
 
 <style lang="scss">
