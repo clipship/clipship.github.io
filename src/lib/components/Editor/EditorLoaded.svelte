@@ -74,7 +74,13 @@
 	{/each}
 
 	{#if tracks.length > 0}
-		<TimelineArea {mediaPlayheadPosition} bind:playheadPosition bind:markingRange bind:tracks />
+		<TimelineArea
+			duration={videoDuration}
+			{mediaPlayheadPosition}
+			bind:playheadPosition
+			bind:markingRange
+			bind:tracks
+		/>
 	{/if}
 </div>
 
