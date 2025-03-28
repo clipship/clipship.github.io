@@ -28,7 +28,7 @@
 		visibleRange: RangeInterval;
 
 		onBarInteract: (ev: MouseEvent, mouseInInterval: number) => void;
-		onDrag: (mouseInInterval: number) => void;
+		onDrag: (delta: number) => void;
 
 		cursor?: string;
 		children: Snippet<
@@ -48,6 +48,8 @@
 	let wrapper = $state<HTMLElement>();
 	let boundingRect = $state<DOMRect>();
 	let clientWidth = $state(0);
+
+	let previousMouseInInterval = $state(0);
 
 	function updateBoundingClientRect() {
 		if (!wrapper) throw new Error('Wrapper element is unbound');
@@ -77,16 +79,18 @@
 
 	function handleDragging(ev: MouseEvent) {
 		const mouseInInterval = convertEventToMouseInInterval(ev);
-		onDrag(mouseInInterval);
+		onDrag(mouseInInterval - previousMouseInInterval);
+		previousMouseInInterval = mouseInInterval;
 	}
 
 	function handleBarMouseDown(ev: MouseEvent) {
 		ev.preventDefault();
 
-		if (ev.target === wrapper) {
-			updateBoundingClientRect();
+		updateBoundingClientRect();
+		const mouseInInterval = convertEventToMouseInInterval(ev);
+		previousMouseInInterval = mouseInInterval;
 
-			const mouseInInterval = convertEventToMouseInInterval(ev);
+		if (ev.target === wrapper) {
 			onBarInteract(ev, mouseInInterval);
 		}
 	}

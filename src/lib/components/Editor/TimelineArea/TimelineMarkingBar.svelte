@@ -22,11 +22,11 @@
 
 	let dragging = $state<Draggable>();
 
-	function onDrag(mouseInInterval: number) {
+	function onDrag(delta: number) {
 		if (dragging === 'start') {
-			markingRange.start = Math.min(mouseInInterval, markingRange.end);
+			markingRange.start = Math.min(markingRange.start + delta, markingRange.end);
 		} else if (dragging === 'end') {
-			markingRange.end = Math.max(markingRange.start, mouseInInterval);
+			markingRange.end = Math.max(markingRange.start, markingRange.end + delta);
 		}
 
 		markingRange = constrainRangeInterval(markingRange);

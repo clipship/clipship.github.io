@@ -16,9 +16,9 @@
 	type Draggable = 'playhead';
 	let dragging = $state<Draggable>();
 
-	function onDrag(mouseInInterval: number) {
+	function onDrag(delta: number) {
 		if (dragging === 'playhead') {
-			playhead = Math.min(Math.max(mouseInInterval, 0), 1);
+			playhead = Math.min(Math.max(playhead + delta, 0), 1);
 		}
 	}
 

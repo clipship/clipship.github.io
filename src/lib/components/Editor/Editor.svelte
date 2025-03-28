@@ -29,6 +29,7 @@
 
 	async function loadFile(ffmpeg: FFmpegApi, file: File) {
 		const probeOutput = await ffmpeg.probe(file);
+		console.log(probeOutput);
 
 		const audioStreams = probeOutput.streams.filter((stream) => stream.codec_type === 'audio');
 
