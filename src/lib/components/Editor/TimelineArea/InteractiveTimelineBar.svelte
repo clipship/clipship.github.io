@@ -72,7 +72,7 @@
 		if (!boundingRect) throw new Error('Bounding rect is not yet determined');
 
 		const mouseX = ev.clientX - boundingRect.left;
-		const mouseInViewFraction = Math.min(Math.max(mouseX / boundingRect.width, 0), 1);
+		const mouseInViewFraction = mouseX / boundingRect.width;
 
 		return convertRangeToGlobalSpace(mouseInViewFraction, visibleRange);
 	}

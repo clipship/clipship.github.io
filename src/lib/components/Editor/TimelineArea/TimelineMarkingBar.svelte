@@ -108,11 +108,13 @@
 		&.start {
 			left: calc(-0.5px - $handle-width);
 			border-radius: 100vw 0 0 100vw;
+			border-right: 1px solid scheme.var-color('secondary', 1);
 			cursor: w-resize;
 		}
 
 		&.end {
 			border-radius: 0 100vw 100vw 0;
+			border-left: 1px solid scheme.var-color('secondary', 1);
 			cursor: e-resize;
 		}
 

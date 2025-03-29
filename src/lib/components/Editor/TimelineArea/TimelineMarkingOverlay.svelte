@@ -66,7 +66,8 @@
 		backdrop-filter: grayscale(1) brightness(50%);
 
 		&.start {
-			left: -0.5px;
+			box-sizing: content-box;
+			left: -1px;
 			width: calc(100% * var(--x));
 			border-right: 1px solid scheme.var-color('secondary', 1);
 		}
