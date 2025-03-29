@@ -18,8 +18,9 @@
 		end: convertGlobalToRangeSpace(markingRange.end, visibleRange)
 	});
 
-	type Draggable = 'start' | 'end';
+	let isTrimmingActive = $derived(markingRange.start > 0 || markingRange.end < 1);
 
+	type Draggable = 'start' | 'end';
 	let dragging = $state<Draggable>();
 
 	function onDrag(delta: number) {
@@ -34,39 +35,61 @@
 
 	function onBarInteract(ev: MouseEvent, mouseInInterval: number) {
 		if (ev.buttons === 1) {
-			markingRange = { start: mouseInInterval, end: mouseInInterval };
-			dragging = 'end';
+			if (!isTrimmingActive) {
+				// Start trimming from this position
+				markingRange = { start: mouseInInterval, end: mouseInInterval };
+				dragging = 'end';
+			} else {
+				// Stop trimming
+				markingRange = { start: 0, end: 1 };
+			}
 		}
 	}
 </script>
 
-<InteractiveTimelineBar bind:dragging {visibleRange} {onBarInteract} {onDrag} cursor="copy">
+<InteractiveTimelineBar
+	bind:dragging
+	{visibleRange}
+	{onBarInteract}
+	{onDrag}
+	cursor={isTrimmingActive ? 'pointer' : 'copy'}
+>
 	{#snippet children(clientWidth, eventStartDragging)}
-		<div
-			class="handle start"
-			class:dragging={dragging === 'start'}
-			style="--x: {markingRangeInView.start * clientWidth}px;"
-			use:timelineA11y={{
-				value: markingRange.start,
-				onmousedown: eventStartDragging('start')
-			}}
-		></div>
-		<div
-			class="handle end"
-			class:dragging={dragging === 'end'}
-			style="--x: {markingRangeInView.end * clientWidth}px;"
-			use:timelineA11y={{
-				value: markingRange.end,
-				onmousedown: eventStartDragging('end')
-			}}
-		></div>
+		{#if isTrimmingActive}
+			{@const start = markingRangeInView.start}
+			{@const end = markingRangeInView.end}
+			<div
+				class="handle start"
+				class:dragging={dragging === 'start'}
+				style="--x: {start * clientWidth}px;"
+				use:timelineA11y={{
+					value: markingRange.start,
+					onmousedown: eventStartDragging('start')
+				}}
+			></div>
+
+			<div
+				class="clip"
+				style="--start: {start * clientWidth}px; --end: {end * clientWidth}px;"
+			></div>
+
+			<div
+				class="handle end"
+				class:dragging={dragging === 'end'}
+				style="--x: {end * clientWidth}px;"
+				use:timelineA11y={{
+					value: markingRange.end,
+					onmousedown: eventStartDragging('end')
+				}}
+			></div>
+		{/if}
 	{/snippet}
 </InteractiveTimelineBar>
 
 <style lang="scss">
 	@use '$lib/style/scheme';
 
-	$handle-width: 20px;
+	$handle-width: 24px;
 	$handle-interaction-padding: 20px;
 
 	.handle {
@@ -83,7 +106,7 @@
 		}
 
 		&.start {
-			left: calc(-1.5px - $handle-width);
+			left: calc(-0.5px - $handle-width);
 			border-radius: 100vw 0 0 100vw;
 			cursor: w-resize;
 		}
@@ -101,5 +124,14 @@
 			left: -$handle-interaction-padding;
 			right: -$handle-interaction-padding;
 		}
+	}
+
+	.clip {
+		position: absolute;
+		z-index: -1;
+		height: 100%;
+		width: calc(var(--end) - var(--start));
+		transform: translateX(var(--start));
+		background-color: scheme.var-color('secondary', -2);
 	}
 </style>

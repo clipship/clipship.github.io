@@ -81,8 +81,8 @@
 		modifyZoom(Math.sign(delta) * amount, pivot);
 	}
 
-	function processplayheadDragging(ev: MouseEvent) {
-		if ((ev.buttons & BITMASK_LEFT_MOUSE_BUTTON) > 0) {
+	function processPlayheadDragging(ev: MouseEvent) {
+		if (isTimelineFocused && (ev.buttons & BITMASK_LEFT_MOUSE_BUTTON) > 0) {
 			const { start, end } = transformAsRange.current;
 
 			const mouseInViewFraction = (ev.clientX - timelineBoundingRect!.x) / timelineWidth;
@@ -93,7 +93,7 @@
 	}
 
 	function handlePanning(ev: MouseEvent) {
-		if ((ev.buttons & BITMASK_MIDDLE_MOUSE_BUTTON) > 0) {
+		if (isTimelineFocused && (ev.buttons & BITMASK_MIDDLE_MOUSE_BUTTON) > 0) {
 			const deltaFractionUnscaled = (-2 * ev.movementX) / timelineWidth;
 
 			const delta = transform.rangeFromCenter * deltaFractionUnscaled;
@@ -104,7 +104,16 @@
 			});
 		}
 	}
+
+	let isTimelineFocused = $state(false);
+
+	function onTimelineMouseDown(ev: MouseEvent) {
+		isTimelineFocused = true;
+		processPlayheadDragging(ev);
+	}
 </script>
+
+<svelte:window onmouseup={() => (isTimelineFocused = false)} />
 
 <div class="wrapper" onmousemove={handlePanning} onwheel={handleWheel} role="presentation">
 	<div class="marking-bar">
@@ -135,8 +144,8 @@
 			class="timeline"
 			bind:clientWidth={timelineWidth}
 			bind:this={timelineElement}
-			onmousedown={processplayheadDragging}
-			onmousemove={processplayheadDragging}
+			onmousedown={onTimelineMouseDown}
+			onmousemove={processPlayheadDragging}
 			role="presentation"
 		>
 			<TimelineMarkingOverlay
@@ -155,7 +164,9 @@
 	</div>
 
 	<div class="marking-bar">
-		<div class="placeholder-cell"></div>
+		<div class="placeholder-cell trim-coloring">
+			<Timecode seconds={(markingRange.end - markingRange.start) * duration} />
+		</div>
 		<TimelineMarkingBar visibleRange={transformAsRange.current} bind:markingRange />
 	</div>
 </div>
@@ -163,7 +174,7 @@
 <style lang="scss">
 	@use '$lib/style/scheme';
 
-	$channel-width: 120px;
+	$channel-width: 160px;
 
 	.marking-bar,
 	.timeline-area {
@@ -177,7 +188,12 @@
 
 	.placeholder-cell {
 		border-right: 1px solid scheme.var-color('primary', -1);
-		text-align: center;
+		display: grid;
+		place-content: center;
+
+		&.trim-coloring {
+			color: scheme.var-color('secondary', 1);
+		}
 	}
 
 	.timeline-area {

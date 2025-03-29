@@ -30,7 +30,7 @@
 	}
 </script>
 
-<InteractiveTimelineBar bind:dragging {visibleRange} {onBarInteract} {onDrag}>
+<InteractiveTimelineBar bind:dragging {visibleRange} {onBarInteract} {onDrag} cursor="text">
 	{#snippet children(clientWidth, eventStartDragging)}
 		<div class="playhead" style="--x: {mediaPlayheadInView * clientWidth}px;"></div>
 

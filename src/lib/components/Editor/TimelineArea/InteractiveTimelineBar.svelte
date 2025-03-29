@@ -117,6 +117,6 @@
 		position: relative;
 		overflow: hidden;
 
-		height: 20px;
+		height: 24px;
 	}
 </style>
