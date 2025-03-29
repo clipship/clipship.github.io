@@ -10,9 +10,9 @@
 		stroke?: boolean;
 		color?: Color;
 		outline?: boolean;
-		grayscale?: boolean;
+		disabled?: boolean | 'visual-only';
 
-		onclick: HTMLButtonElement['onclick'];
+		onclick: (ev: MouseEvent) => void;
 		children: Snippet;
 	}
 
@@ -21,14 +21,20 @@
 		stroke = false,
 		color = 'primary',
 		outline = false,
-		grayscale = false,
+		disabled = false,
 		onclick,
 		children
 	}: Props = $props();
 </script>
 
 <Tooltip>
-	<button data-color={color} {onclick} class:outline class:grayscale>
+	<button
+		data-color={color}
+		{onclick}
+		class:outline
+		disabled={disabled === true}
+		class:visual-disabled={disabled === 'visual-only'}
+	>
 		<Icon fill={stroke ? 'transparent' : 'currentColor'} />
 	</button>
 
@@ -82,7 +88,7 @@
 		}
 
 		&:disabled,
-		&.grayscale {
+		&.visual-disabled {
 			filter: grayscale(1);
 		}
 

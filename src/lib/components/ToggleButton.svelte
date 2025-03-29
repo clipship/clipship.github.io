@@ -20,7 +20,7 @@
 	outline
 	onclick={() => (value = !value)}
 	color="primary"
-	grayscale={!value}
+	disabled={value ? false : 'visual-only'}
 >
 	{@render children()}
 </IconButton>
