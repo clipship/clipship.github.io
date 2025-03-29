@@ -52,6 +52,12 @@
 		}
 	});
 
+	function snapToStart() {
+		paused = true;
+		playheadPosition = markingRangeStart;
+		controlledTime = [markingRangeStart * videoDuration];
+	}
+
 	function handleKeyDown(ev: KeyboardEvent) {
 		if (ev.key === ' ') {
 			paused = !paused;
@@ -64,7 +70,7 @@
 <div>
 	<VideoArea {file} {paused} bind:currentTime={videoCurrentTime} bind:duration={videoDuration} />
 
-	<ControlArea bind:paused />
+	<ControlArea bind:paused {snapToStart} />
 
 	{#if tracks.length > 0}
 		<TimelineArea

@@ -60,6 +60,8 @@
 		padding: 8px;
 		font-size: 0.8rem;
 		text-align: center;
+		width: max-content;
+		max-width: 200px;
 
 		box-shadow: 2px 2px 0 #0005;
 	}
