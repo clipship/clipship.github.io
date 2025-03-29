@@ -54,15 +54,15 @@
 		translate: 0 4px;
 		transition: 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
 
-		background-color: scheme.var-color('primary');
+		background-color: scheme.var-color('neutral');
 		border: none;
 		border-radius: 8px;
-		padding: 8px;
+		padding: 10px 16px;
 		font-size: 0.8rem;
 		text-align: center;
 		width: max-content;
 		max-width: 200px;
 
-		box-shadow: 2px 2px 0 #0005;
+		box-shadow: 0 2px 6px #000a;
 	}
 </style>

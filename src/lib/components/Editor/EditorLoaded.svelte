@@ -23,6 +23,7 @@
 	let controlledTime = $state.raw([0]);
 
 	let paused = $state(true);
+	let loop = $state(true);
 	let videoCurrentTime = $state(0);
 	let videoDuration = $state(1);
 	let mediaPlayheadPosition = $derived(videoCurrentTime / videoDuration);
@@ -47,8 +48,12 @@
 		const isMediaPlayheadAfterClip = mediaPlayheadPosition >= markingRange.end;
 
 		if (!isCursorAfterClip && isMediaPlayheadAfterClip) {
-			// Loop
-			controlledTime = [markingRange.start * videoDuration];
+			if (loop) {
+				controlledTime = [markingRange.start * videoDuration];
+			} else {
+				paused = true;
+				controlledTime = [playheadPosition * videoDuration];
+			}
 		}
 	});
 
@@ -70,7 +75,7 @@
 <div>
 	<VideoArea {file} {paused} bind:currentTime={videoCurrentTime} bind:duration={videoDuration} />
 
-	<ControlArea bind:paused {snapToStart} />
+	<ControlArea {snapToStart} bind:paused bind:loop />
 
 	{#if tracks.length > 0}
 		<TimelineArea

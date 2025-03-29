@@ -3,23 +3,33 @@
 	import type { Snippet } from 'svelte';
 	import Tooltip from './Tooltip.svelte';
 
-	type Color = 'primary' | 'secondary';
+	export type Color = 'primary' | 'secondary' | 'neutral';
 
 	interface Props {
 		icon: typeof IconType;
 		stroke?: boolean;
 		color?: Color;
+		outline?: boolean;
+		grayscale?: boolean;
 
 		onclick: HTMLButtonElement['onclick'];
 		children: Snippet;
 	}
 
-	let { icon: Icon, stroke = false, color = 'primary', onclick, children }: Props = $props();
+	let {
+		icon: Icon,
+		stroke = false,
+		color = 'primary',
+		outline = false,
+		grayscale = false,
+		onclick,
+		children
+	}: Props = $props();
 </script>
 
 <Tooltip>
-	<button data-color={color} {onclick}>
-		<Icon fill={stroke ? undefined : 'currentColor'} />
+	<button data-color={color} {onclick} class:outline class:grayscale>
+		<Icon fill={stroke ? 'transparent' : 'currentColor'} />
 	</button>
 
 	{#snippet tooltip()}
@@ -31,27 +41,59 @@
 	@use '$lib/style/components';
 	@use '$lib/style/scheme';
 
+	@mixin reactive-color($color) {
+		&:not(.outline) {
+			background-color: scheme.var-color($color);
+
+			&:hover,
+			&:focus-visible,
+			&:active {
+				background-color: scheme.var-color($color, 1);
+			}
+		}
+
+		&.outline {
+			background-color: scheme.var-color($color, -2);
+			color: scheme.var-color($color);
+			border: 2px solid currentColor;
+
+			&:hover,
+			&:focus-visible,
+			&:active {
+				color: scheme.var-color($color, 1);
+			}
+		}
+	}
+
 	button {
 		@include components.transitions-snappy();
 
-		display: flex;
-		color: white;
+		display: grid;
+		place-content: center;
+		color: scheme.var-color('text');
 		border: none;
 		border-radius: 8px;
-		padding: 8px;
-		background-color: scheme.var-color('primary');
+		width: 52px;
+		height: 40px;
 		cursor: pointer;
-
-		&:hover {
-			background-color: scheme.var-color('primary', 1);
-		}
 
 		&:active {
 			scale: 0.9;
 		}
 
+		&:disabled,
+		&.grayscale {
+			filter: grayscale(1);
+		}
+
+		@include reactive-color('primary');
+
 		&[data-color='secondary'] {
-			background-color: scheme.var-color('secondary');
+			@include reactive-color('secondary');
+		}
+
+		&[data-color='neutral'] {
+			@include reactive-color('neutral');
 		}
 	}
 </style>

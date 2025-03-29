@@ -19,11 +19,13 @@
 }
 
 $primary: #ff4b33;
-$secondary: #4b6cff;
+$secondary: #814bff;
+$neutral: #48415f;
 
 :root {
 	@include color('primary', $primary);
 	@include color('secondary', $secondary);
+	@include color('neutral', $neutral);
 
 	#{color-key('background')}: #16141b;
 	#{color-key('text')}: white;
