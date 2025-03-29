@@ -28,8 +28,8 @@
 	<div class="playhead media" style="--x: {mediaPositionInView * clientWidth}px;"></div>
 	<div class="playhead" style="--x: {positionInView * clientWidth}px;"></div>
 
-	<div class="boundary start" style="--x: {markingRangeInView.start * clientWidth}px;"></div>
-	<div class="boundary end" style="--x: {markingRangeInView.end * clientWidth}px;"></div>
+	<div class="boundary start" style="--x: {Math.min(1, markingRangeInView.start)};"></div>
+	<div class="boundary end" style="--x: {Math.max(0, markingRangeInView.end)};"></div>
 </div>
 
 <style lang="scss">
@@ -67,12 +67,12 @@
 
 		&.start {
 			left: -0.5px;
-			width: calc(var(--x));
+			width: calc(100% * var(--x));
 			border-right: 1px solid scheme.var-color('secondary', 1);
 		}
 
 		&.end {
-			left: calc(var(--x) - 0.5px);
+			left: calc((100% * var(--x)) - 0.5px);
 			right: 0;
 			border-left: 1px solid scheme.var-color('secondary', 1);
 		}
