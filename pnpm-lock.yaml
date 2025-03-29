@@ -20,6 +20,9 @@ importers:
       '@fontsource/arvo':
         specifier: ^5.2.5
         version: 5.2.5
+      '@lucide/svelte':
+        specifier: ^0.485.0
+        version: 0.485.0(svelte@5.23.2)
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -392,6 +395,11 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@lucide/svelte@0.485.0':
+    resolution: {integrity: sha512-8+pW8gyRc7D9tklhNxXV3v0N/7yIo64Njjs/+6zaD2d4dDqQkPT8WgVUQ/XXoKAAimJNiyrtu1SK4YiK42Jo9Q==}
+    peerDependencies:
+      svelte: ^5
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2083,6 +2091,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@lucide/svelte@0.485.0(svelte@5.23.2)':
+    dependencies:
+      svelte: 5.23.2
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

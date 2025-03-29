@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Audio from './Audio.svelte';
+	import ControlArea from './ControlArea.svelte';
 	import type { RangeInterval } from './TimelineArea/interval-space';
 	import type { TrackState } from './TimelineArea/TimelineArea.svelte';
 	import TimelineArea from './TimelineArea/TimelineArea.svelte';
@@ -63,16 +64,7 @@
 <div>
 	<VideoArea {file} {paused} bind:currentTime={videoCurrentTime} bind:duration={videoDuration} />
 
-	{#each tracks as track}
-		{#if track.wavBuffer}
-			<Audio
-				wavBuffer={track.wavBuffer}
-				muted={!track.isUsed}
-				{paused}
-				referenceTime={controlledTime[0]}
-			/>
-		{/if}
-	{/each}
+	<ControlArea bind:paused />
 
 	{#if tracks.length > 0}
 		<TimelineArea
@@ -85,9 +77,18 @@
 	{/if}
 </div>
 
-<style lang="scss">
-	@use '$lib/style/scheme';
+{#each tracks as track}
+	{#if track.wavBuffer}
+		<Audio
+			wavBuffer={track.wavBuffer}
+			muted={!track.isUsed}
+			{paused}
+			referenceTime={controlledTime[0]}
+		/>
+	{/if}
+{/each}
 
+<style lang="scss">
 	div {
 		display: grid;
 		grid-template-rows: 1fr auto;
