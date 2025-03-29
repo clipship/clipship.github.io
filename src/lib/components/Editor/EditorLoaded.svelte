@@ -64,8 +64,19 @@
 	}
 
 	function handleKeyDown(ev: KeyboardEvent) {
-		if (ev.key === ' ') {
-			paused = !paused;
+		const focused = ev.target;
+		if (focused instanceof HTMLInputElement) {
+			return;
+		}
+
+		const isAnyElementFocused =
+			focused && focused !== document.body && focused !== document.documentElement;
+
+		// Only handle accessibility-interfering hotkeys when no element is focused
+		if (!isAnyElementFocused) {
+			if (ev.key === ' ') {
+				paused = !paused;
+			}
 		}
 	}
 </script>

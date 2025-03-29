@@ -6,17 +6,19 @@
 	interface Props {
 		icon: typeof IconType;
 		stroke?: boolean;
+		disableMouseFocus?: boolean;
 
 		value: boolean;
 		children: Snippet;
 	}
 
-	let { icon, stroke = false, value = $bindable(), children }: Props = $props();
+	let { icon, stroke = false, disableMouseFocus, value = $bindable(), children }: Props = $props();
 </script>
 
 <IconButton
 	{icon}
 	{stroke}
+	{disableMouseFocus}
 	outline
 	onclick={() => (value = !value)}
 	color="primary"

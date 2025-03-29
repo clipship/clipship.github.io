@@ -12,6 +12,7 @@
 		outline?: boolean;
 		disabled?: boolean | 'visual-only';
 
+		disableMouseFocus?: boolean;
 		onclick: (ev: MouseEvent) => void;
 		children: Snippet;
 	}
@@ -22,15 +23,21 @@
 		color = 'primary',
 		outline = false,
 		disabled = false,
+		disableMouseFocus = false,
 		onclick,
 		children
 	}: Props = $props();
+
+	function preventFocusOnMouseDown(ev: MouseEvent) {
+		ev.preventDefault();
+	}
 </script>
 
 <Tooltip>
 	<button
 		data-color={color}
 		{onclick}
+		onmousedown={disableMouseFocus ? preventFocusOnMouseDown : undefined}
 		class:outline
 		disabled={disabled === true}
 		class:visual-disabled={disabled === 'visual-only'}

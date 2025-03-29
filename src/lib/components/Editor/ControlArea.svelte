@@ -13,13 +13,19 @@
 </script>
 
 <div>
-	<IconButton icon={RewindIcon} onclick={snapToStart} color="neutral">Go to Start</IconButton>
+	<IconButton icon={RewindIcon} onclick={snapToStart} color="neutral" disableMouseFocus>
+		Go to Start
+	</IconButton>
 
-	<IconButton icon={paused ? PlayIcon : PauseIcon} onclick={() => (paused = !paused)}>
+	<IconButton
+		icon={paused ? PlayIcon : PauseIcon}
+		onclick={() => (paused = !paused)}
+		disableMouseFocus
+	>
 		{paused ? 'Play' : 'Pause'}
 	</IconButton>
 
-	<ToggleButton icon={Repeat2Icon} bind:value={loop} stroke>
+	<ToggleButton icon={Repeat2Icon} bind:value={loop} stroke disableMouseFocus>
 		{loop ? 'Disable Loop' : 'Enable Loop'}
 	</ToggleButton>
 </div>
