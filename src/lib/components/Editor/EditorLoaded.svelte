@@ -14,6 +14,7 @@
 
 	let playheadPosition = $state(0);
 	let markingRange = $state<RangeInterval>({ start: 0, end: 1 });
+	let markingRangeStart = $derived(markingRange.start);
 
 	// Using $state.raw (with an array) makes all value changes reactive.
 	// This allows dependent $effects to trigger even if the same value gets assigned twice.
@@ -37,7 +38,7 @@
 
 	$effect(() => {
 		// Update cursor whenever changing the clip marking range
-		playheadPosition = markingRange.start;
+		playheadPosition = markingRangeStart;
 	});
 
 	$effect.pre(() => {
