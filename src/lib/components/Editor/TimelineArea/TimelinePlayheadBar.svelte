@@ -56,19 +56,21 @@
 		position: absolute;
 		height: 100%;
 		width: $handle-width;
+		pointer-events: none;
 
-		cursor: ew-resize;
 		border-radius: 0 0 100vw 100vw;
 		transform: translateX(calc(var(--x) - $handle-width / 2));
 		background-color: scheme.var-color('primary');
+	}
 
-		&.cursor {
-			background-color: white;
+	.cursor {
+		cursor: ew-resize;
+		background-color: white;
+		pointer-events: all;
 
-			&:hover,
-			&.dragging {
-				background-color: scheme.var-color('primary', 1);
-			}
+		&:hover,
+		&.dragging {
+			background-color: scheme.var-color('primary', 1);
 		}
 
 		&::before {
