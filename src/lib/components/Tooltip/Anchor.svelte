@@ -1,18 +1,31 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
-	import { globalOverlay, type Popover } from './Overlay.svelte';
+	import { globalOverlay, PopoverState, type Popover } from './Overlay.svelte';
 	import Tooltip from './Tooltip.svelte';
 
 	interface Props {
-		show?: boolean;
+		keepVisible?: boolean;
 		tooltip: Snippet;
 
 		children: Snippet;
 	}
 
-	let { show, tooltip, children }: Props = $props();
+	let { keepVisible = false, tooltip, children }: Props = $props();
 
 	let anchorElement = $state<HTMLElement>();
+
+	interface TooltipState {
+		visible: boolean;
+	}
+
+	let popoverState = $state<PopoverState<TooltipState>>();
+	let hovered = $state(false);
+
+	$effect(() => {
+		if (popoverState) {
+			popoverState.props!.visible = keepVisible || hovered;
+		}
+	});
 
 	onMount(() => {
 		const popover: Popover = {
@@ -21,7 +34,9 @@
 			content: tooltip
 		};
 
-		globalOverlay.mountPopover(popover);
+		popoverState = globalOverlay.mountPopover<TooltipState>(popover, {
+			visible: keepVisible
+		});
 
 		return () => {
 			globalOverlay.unmountPopover(popover);
@@ -29,7 +44,13 @@
 	});
 </script>
 
-<div class="anchor" bind:this={anchorElement}>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+	class="anchor"
+	bind:this={anchorElement}
+	onmouseenter={() => (hovered = true)}
+	onmouseleave={() => (hovered = false)}
+>
 	{@render children()}
 </div>
 

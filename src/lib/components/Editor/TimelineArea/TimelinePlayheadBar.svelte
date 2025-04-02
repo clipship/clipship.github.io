@@ -2,14 +2,16 @@
 	import Anchor from '$lib/components/Tooltip/Anchor.svelte';
 	import InteractiveTimelineBar, { timelineA11y } from './InteractiveTimelineBar.svelte';
 	import { convertGlobalToRangeSpace, type RangeInterval } from './interval-space';
+	import Timecode from './Timecode.svelte';
 
 	interface Props {
 		playhead: number;
 		mediaPlayhead: number;
 		visibleRange: RangeInterval;
+		duration: number;
 	}
 
-	let { playhead = $bindable(), mediaPlayhead, visibleRange }: Props = $props();
+	let { playhead = $bindable(), mediaPlayhead, visibleRange, duration }: Props = $props();
 
 	let playheadInView = $derived(convertGlobalToRangeSpace(playhead, visibleRange));
 	let mediaPlayheadInView = $derived(convertGlobalToRangeSpace(mediaPlayhead, visibleRange));
@@ -35,7 +37,7 @@
 	{#snippet children(clientWidth, eventStartDragging)}
 		<div class="playhead" style="--x: {mediaPlayheadInView * clientWidth}px;"></div>
 
-		<Anchor>
+		<Anchor keepVisible={dragging === 'playhead'}>
 			<div
 				class="playhead cursor"
 				class:dragging={dragging === 'playhead'}
@@ -47,7 +49,7 @@
 			></div>
 
 			{#snippet tooltip()}
-				{playhead}
+				<Timecode seconds={playhead * duration} />
 			{/snippet}
 		</Anchor>
 	{/snippet}

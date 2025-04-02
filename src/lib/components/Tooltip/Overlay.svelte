@@ -3,36 +3,56 @@
 	import { writable } from 'svelte/store';
 	import PopoverBox from './PopoverBox.svelte';
 
-	export interface Popover {
+	type BaseProps = { children: Snippet };
+
+	export interface Popover<TProps = any> {
 		anchorElement: HTMLElement;
-		component: Component<{ visible: boolean; children: Snippet }>;
+		component: Component<TProps & BaseProps>;
 		content: Snippet;
 	}
 
 	export interface OverlayContext {
-		mountPopover(popover: Popover): void;
+		mountPopover<TProps>(popover: Popover<TProps>, props?: TProps): PopoverState<TProps>;
 		unmountPopover(popover: Popover): void;
 	}
 
-	const globalPopovers = writable<Popover[]>([]);
+	export class PopoverState<TProps = any> {
+		options: Popover;
+		props = $state<TProps>();
+
+		constructor(options: Popover, props?: TProps) {
+			this.options = options;
+			this.props = props;
+		}
+	}
+
+	const globalPopovers = writable<PopoverState[]>([]);
 
 	export const globalOverlay: OverlayContext = {
-		mountPopover: (popover) => globalPopovers.update((items) => [...items, popover]),
+		mountPopover: <TProps,>(popover: Popover<TProps>, props?: TProps) => {
+			const state = new PopoverState<TProps>(popover, props);
+
+			globalPopovers.update((items) => [...items, state]);
+
+			return state;
+		},
 
 		unmountPopover: (popover) =>
-			globalPopovers.update((items) => items.filter((item) => item !== popover))
+			globalPopovers.update((items) => items.filter((item) => item.options !== popover))
 	};
 </script>
 
 <div class="overlay">
 	{#each $globalPopovers as popover}
-		{@const Popover = popover.component}
-		{@const content = popover.content}
-		{@const reference = popover.anchorElement.children.item(0) as HTMLElement}
+		{@const Popover = popover.options.component}
+		{@const content = popover.options.content}
+		{@const reference = popover.options.anchorElement.children.item(0) as HTMLElement}
+
+		{@const popoverProps = popover.props}
 
 		<PopoverBox {reference}>
-			{#snippet popover(visible)}
-				<Popover {visible}>
+			{#snippet popover()}
+				<Popover {...popoverProps}>
 					{@render content()}
 				</Popover>
 			{/snippet}

@@ -14,7 +14,7 @@
 	let ds = $derived(part((seconds * 100) % 100));
 </script>
 
-<pre>{mm}:{ss}:{ds}</pre>
+<pre>{mm}:{ss}.{ds}</pre>
 
 <style>
 	pre {

@@ -18,7 +18,7 @@
 
 	[role='tooltip'] {
 		margin: 6px;
-		opacity: 0.5;
+		opacity: 0;
 		translate: 0 4px;
 		transition: 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
 

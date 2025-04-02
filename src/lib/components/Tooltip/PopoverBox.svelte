@@ -1,18 +1,16 @@
-<script lang="ts">
+<script lang="ts" generics="TProps">
 	import { onMount, type Snippet } from 'svelte';
 
 	const VIEWPORT_MARGIN = 0;
 
 	interface Props {
 		reference: HTMLElement;
-		keepVisible?: boolean;
-		popover: Snippet<[keepVisible: boolean]>;
+		popover: Snippet;
 	}
 
 	let { reference, popover }: Props = $props();
 
 	let rect = $state(reference.getBoundingClientRect());
-	let mockBox = $state<HTMLElement>();
 
 	let update = $state(true);
 	let animationFrameRequest = $state<number>();
@@ -68,30 +66,15 @@
 />
 
 <div
-	bind:this={mockBox}
-	class="box"
-	style="--x: {rect.x}px; --y: {rect.y}px; --width: {rect.width}px; --height: {rect.height}px;"
-></div>
-
-<div
 	class="child"
 	bind:clientWidth={childWidth}
 	bind:clientHeight={childHeight}
 	style="--x: {childX}px; --y: {childY}px;"
 >
-	{@render popover(true)}
+	{@render popover()}
 </div>
 
 <style lang="scss">
-	.box {
-		position: absolute;
-		left: var(--x);
-		top: var(--y);
-		width: var(--width);
-		height: var(--height);
-		outline: 1px solid white;
-	}
-
 	.child {
 		position: absolute;
 		left: var(--x);

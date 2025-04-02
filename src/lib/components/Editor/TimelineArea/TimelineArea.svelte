@@ -124,6 +124,7 @@
 			visibleRange={transformAsRange.current}
 			bind:playhead={playheadPosition}
 			mediaPlayhead={mediaPlayheadPosition}
+			{duration}
 		/>
 	</div>
 
