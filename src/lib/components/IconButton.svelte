@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Icon as IconType } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
-	import Tooltip from './Tooltip.svelte';
+	import Anchor from './Tooltip/Anchor.svelte';
 
 	export type Color = 'primary' | 'secondary' | 'neutral';
 
@@ -33,7 +33,7 @@
 	}
 </script>
 
-<Tooltip>
+<Anchor>
 	<button
 		data-color={color}
 		{onclick}
@@ -48,7 +48,7 @@
 	{#snippet tooltip()}
 		{@render children()}
 	{/snippet}
-</Tooltip>
+</Anchor>
 
 <style lang="scss">
 	@use '$lib/style/components';

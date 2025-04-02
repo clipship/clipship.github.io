@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Anchor from '$lib/components/Tooltip/Anchor.svelte';
 	import InteractiveTimelineBar, { timelineA11y } from './InteractiveTimelineBar.svelte';
 	import { convertGlobalToRangeSpace, type RangeInterval } from './interval-space';
 
@@ -34,15 +35,21 @@
 	{#snippet children(clientWidth, eventStartDragging)}
 		<div class="playhead" style="--x: {mediaPlayheadInView * clientWidth}px;"></div>
 
-		<div
-			class="playhead cursor"
-			class:dragging={dragging === 'playhead'}
-			style="--x: {playheadInView * clientWidth}px;"
-			use:timelineA11y={{
-				value: playhead,
-				onmousedown: eventStartDragging('playhead')
-			}}
-		></div>
+		<Anchor>
+			<div
+				class="playhead cursor"
+				class:dragging={dragging === 'playhead'}
+				style="--x: {playheadInView * clientWidth}px;"
+				use:timelineA11y={{
+					value: playhead,
+					onmousedown: eventStartDragging('playhead')
+				}}
+			></div>
+
+			{#snippet tooltip()}
+				{playhead}
+			{/snippet}
+		</Anchor>
 	{/snippet}
 </InteractiveTimelineBar>
 
