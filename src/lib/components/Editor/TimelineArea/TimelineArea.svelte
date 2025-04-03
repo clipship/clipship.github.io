@@ -8,7 +8,6 @@
 		type CenteredInterval,
 		type RangeInterval
 	} from './interval-space';
-	import Timecode from './Timecode.svelte';
 	import TimelineMarkingBar from './TimelineMarkingBar.svelte';
 	import TimelineMarkingOverlay from './TimelineMarkingOverlay.svelte';
 	import TimelinePlayheadBar from './TimelinePlayheadBar.svelte';
@@ -117,9 +116,7 @@
 
 <div class="wrapper" onmousemove={handlePanning} onwheel={handleWheel} role="presentation">
 	<div class="marking-bar">
-		<div class="placeholder-cell">
-			<Timecode seconds={mediaPlayheadPosition * duration} />
-		</div>
+		<div class="placeholder-cell"></div>
 		<TimelinePlayheadBar
 			visibleRange={transformAsRange.current}
 			bind:playhead={playheadPosition}
@@ -165,9 +162,7 @@
 	</div>
 
 	<div class="marking-bar">
-		<div class="placeholder-cell trim-coloring">
-			<Timecode seconds={(markingRange.end - markingRange.start) * duration} />
-		</div>
+		<div class="placeholder-cell"></div>
 		<TimelineMarkingBar visibleRange={transformAsRange.current} bind:markingRange {duration} />
 	</div>
 </div>
@@ -191,10 +186,6 @@
 		border-right: 1px solid scheme.var-color('primary', -1);
 		display: grid;
 		place-content: center;
-
-		&.trim-coloring {
-			color: scheme.var-color('secondary', 1);
-		}
 	}
 
 	.timeline-area {

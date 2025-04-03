@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import Audio from './Audio.svelte';
 	import ControlArea from './ControlArea.svelte';
 	import type { RangeInterval } from './TimelineArea/interval-space';
@@ -39,8 +40,11 @@
 	});
 
 	$effect(() => {
-		// Update cursor whenever changing the clip marking range
-		playheadPosition = markingRangeStart;
+		const markingRangeEnd = untrack(() => markingRange.end);
+		if (markingRangeStart > 0 || markingRangeEnd < 1) {
+			// Update cursor whenever changing the clip marking range
+			playheadPosition = markingRangeStart;
+		}
 	});
 
 	$effect.pre(() => {
@@ -61,6 +65,16 @@
 		paused = true;
 		playheadPosition = markingRangeStart;
 		controlledTime = [markingRangeStart * videoDuration];
+	}
+
+	let isTrimmingActive = $derived(markingRange.start > 0 || markingRange.end < 1);
+
+	function setTrimmingActive(active: boolean) {
+		if (active) {
+			markingRange = { start: playheadPosition, end: playheadPosition };
+		} else {
+			markingRange = { start: 0, end: 1 };
+		}
 	}
 
 	function handleKeyDown(ev: KeyboardEvent) {
@@ -86,7 +100,15 @@
 <div>
 	<VideoArea {file} {paused} bind:currentTime={videoCurrentTime} bind:duration={videoDuration} />
 
-	<ControlArea {snapToStart} bind:paused bind:loop />
+	<ControlArea
+		{snapToStart}
+		bind:paused
+		bind:loop
+		{isTrimmingActive}
+		{setTrimmingActive}
+		currentTime={videoCurrentTime}
+		duration={videoDuration}
+	/>
 
 	{#if tracks.length > 0}
 		<TimelineArea

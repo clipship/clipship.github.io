@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { Icon as IconType } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
-	import IconButton from './IconButton.svelte';
+	import IconButton, { type Color } from './IconButton.svelte';
 
 	interface Props {
 		icon: typeof IconType;
+		color?: Color;
 		stroke?: boolean;
 		disableMouseFocus?: boolean;
 
@@ -12,16 +13,23 @@
 		children: Snippet;
 	}
 
-	let { icon, stroke = false, disableMouseFocus, value = $bindable(), children }: Props = $props();
+	let {
+		icon,
+		color,
+		stroke = false,
+		disableMouseFocus,
+		value = $bindable(),
+		children
+	}: Props = $props();
 </script>
 
 <IconButton
 	{icon}
+	{color}
 	{stroke}
 	{disableMouseFocus}
 	outline
 	onclick={() => (value = !value)}
-	color="primary"
 	disabled={value ? false : 'visual-only'}
 >
 	{@render children()}
