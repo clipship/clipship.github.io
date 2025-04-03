@@ -61,7 +61,7 @@
 <style lang="scss">
 	.overlay {
 		position: absolute;
-		z-index: 1;
+		z-index: 999;
 		pointer-events: none;
 		top: 0;
 		left: 0;

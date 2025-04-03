@@ -1,17 +1,20 @@
 <script lang="ts">
+	import Anchor from '$lib/components/Tooltip/Anchor.svelte';
 	import InteractiveTimelineBar, { timelineA11y } from './InteractiveTimelineBar.svelte';
 	import {
 		constrainRangeInterval,
 		convertGlobalToRangeSpace,
 		type RangeInterval
 	} from './interval-space';
+	import Timecode from './Timecode.svelte';
 
 	interface Props {
 		markingRange: RangeInterval;
 		visibleRange: RangeInterval;
+		duration: number;
 	}
 
-	let { markingRange = $bindable(), visibleRange }: Props = $props();
+	let { markingRange = $bindable(), visibleRange, duration }: Props = $props();
 
 	let markingRangeInView = $derived<RangeInterval>({
 		start: convertGlobalToRangeSpace(markingRange.start, visibleRange),
@@ -39,9 +42,6 @@
 				// Start trimming from this position
 				markingRange = { start: mouseInInterval, end: mouseInInterval };
 				dragging = 'end';
-			} else {
-				// Stop trimming
-				markingRange = { start: 0, end: 1 };
 			}
 		}
 	}
@@ -52,36 +52,50 @@
 	{visibleRange}
 	{onBarInteract}
 	{onDrag}
-	cursor={isTrimmingActive ? 'pointer' : 'copy'}
+	cursor={isTrimmingActive ? undefined : 'text'}
 >
 	{#snippet children(clientWidth, eventStartDragging)}
 		{#if isTrimmingActive}
 			{@const start = markingRangeInView.start}
 			{@const end = markingRangeInView.end}
-			<div
-				class="handle start"
-				class:dragging={dragging === 'start'}
-				style="--x: {start * clientWidth}px;"
-				use:timelineA11y={{
-					value: markingRange.start,
-					onmousedown: eventStartDragging('start')
-				}}
-			></div>
+			<Anchor keepVisible={dragging === 'start'}>
+				<div
+					class="handle start"
+					class:dragging={dragging === 'start'}
+					style="--x: {start * clientWidth}px;"
+					use:timelineA11y={() => ({
+						value: markingRange.start,
+						mediaDuration: duration,
+						onmousedown: eventStartDragging('start')
+					})}
+				></div>
+
+				{#snippet tooltip()}
+					<Timecode seconds={markingRange.start * duration} />
+				{/snippet}
+			</Anchor>
 
 			<div
 				class="clip"
 				style="--start: {start * clientWidth}px; --end: {end * clientWidth}px;"
 			></div>
 
-			<div
-				class="handle end"
-				class:dragging={dragging === 'end'}
-				style="--x: {end * clientWidth}px;"
-				use:timelineA11y={{
-					value: markingRange.end,
-					onmousedown: eventStartDragging('end')
-				}}
-			></div>
+			<Anchor keepVisible={dragging === 'end'}>
+				<div
+					class="handle end"
+					class:dragging={dragging === 'end'}
+					style="--x: {end * clientWidth}px;"
+					use:timelineA11y={() => ({
+						value: markingRange.end,
+						mediaDuration: duration,
+						onmousedown: eventStartDragging('end')
+					})}
+				></div>
+
+				{#snippet tooltip()}
+					<Timecode seconds={markingRange.end * duration} />
+				{/snippet}
+			</Anchor>
 		{/if}
 	{/snippet}
 </InteractiveTimelineBar>

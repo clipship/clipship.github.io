@@ -168,7 +168,7 @@
 		<div class="placeholder-cell trim-coloring">
 			<Timecode seconds={(markingRange.end - markingRange.start) * duration} />
 		</div>
-		<TimelineMarkingBar visibleRange={transformAsRange.current} bind:markingRange />
+		<TimelineMarkingBar visibleRange={transformAsRange.current} bind:markingRange {duration} />
 	</div>
 </div>
 
