@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import { type Component, type Snippet } from 'svelte';
-	import { writable } from 'svelte/store';
 	import PopoverBox from './PopoverBox.svelte';
 
 	type BaseProps = { children: Snippet };
@@ -26,24 +25,23 @@
 		}
 	}
 
-	const globalPopovers = writable<PopoverState[]>([]);
+	let globalPopovers = $state<PopoverState[]>([]);
 
 	export const globalOverlay: OverlayContext = {
 		mountPopover: <TProps,>(popover: Popover<TProps>, props?: TProps) => {
 			const state = new PopoverState<TProps>(popover, props);
 
-			globalPopovers.update((items) => [...items, state]);
-
+			globalPopovers.push(state);
 			return state;
 		},
 
 		unmountPopover: (popover) =>
-			globalPopovers.update((items) => items.filter((item) => item.options !== popover))
+			(globalPopovers = globalPopovers.filter((item) => item.options !== popover))
 	};
 </script>
 
 <div class="overlay">
-	{#each $globalPopovers as popover}
+	{#each globalPopovers as popover}
 		{@const Popover = popover.options.component}
 		{@const content = popover.options.content}
 		{@const reference = popover.options.anchorElement.children.item(0) as HTMLElement}

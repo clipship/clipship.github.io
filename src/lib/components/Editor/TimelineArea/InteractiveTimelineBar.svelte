@@ -1,14 +1,21 @@
 <script lang="ts" module>
 	interface Options {
 		value: number;
+		mediaDuration: number;
 		onmousedown?: (ev: MouseEvent) => void;
 	}
 
-	export function timelineA11y(node: HTMLElement, options: Options) {
+	export function timelineA11y(node: HTMLElement, getOptions: () => Options) {
 		$effect(() => {
+			const options = getOptions();
+			const seconds = options.value * options.mediaDuration;
+
 			node.role = 'slider';
 			node.tabIndex = 0;
-			node.ariaValueNow = `${options.value}`;
+			node.ariaValueMin = '0';
+			node.ariaValueMax = `${options.mediaDuration}`;
+			node.ariaValueNow = `${seconds}`;
+			node.ariaValueText = convertSecondsToTimecode(seconds);
 
 			if (options.onmousedown) {
 				node.onmousedown = options.onmousedown;
@@ -22,6 +29,7 @@
 <script lang="ts" generics="TDraggable extends string">
 	import type { Snippet } from 'svelte';
 	import { convertRangeToGlobalSpace, type RangeInterval } from './interval-space';
+	import { convertSecondsToTimecode } from './Timecode.svelte';
 
 	interface Props {
 		dragging: TDraggable | undefined;

@@ -42,10 +42,11 @@
 				class="playhead cursor"
 				class:dragging={dragging === 'playhead'}
 				style="--x: {playheadInView * clientWidth}px;"
-				use:timelineA11y={{
+				use:timelineA11y={() => ({
 					value: playhead,
+					mediaDuration: duration,
 					onmousedown: eventStartDragging('playhead')
-				}}
+				})}
 			></div>
 
 			{#snippet tooltip()}
