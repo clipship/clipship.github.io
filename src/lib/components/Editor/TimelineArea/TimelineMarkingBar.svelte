@@ -70,9 +70,23 @@
 			dragging = 'end';
 		}
 	}
+
+	function onBarDoubleClick() {
+		if (markingRange.start === markingRange.end) {
+			// Reset trim range
+			markingRange = { start: 0, end: 1 };
+		}
+	}
 </script>
 
-<InteractiveTimelineBar bind:dragging {visibleRange} {onBarInteract} {onDrag} cursor="text">
+<InteractiveTimelineBar
+	bind:dragging
+	{visibleRange}
+	{onBarInteract}
+	{onBarDoubleClick}
+	{onDrag}
+	cursor="text"
+>
 	{#snippet children(clientWidth, eventStartDragging)}
 		<div class="playhead" style="--x: {mediaPlayheadInView * clientWidth}px;"></div>
 		<div class="playhead cursor" style="--x: {playheadInView * clientWidth}px;"></div>
@@ -151,9 +165,12 @@
 		background-color: scheme.var-color('secondary');
 		transform: translateX(var(--x));
 
-		&:hover,
-		&.dragging {
+		&:hover {
 			background-color: scheme.var-color('secondary', 1);
+		}
+
+		&.dragging {
+			background-color: scheme.var-color('secondary', 2);
 		}
 
 		&.start {

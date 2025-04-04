@@ -18,10 +18,14 @@
 			node.ariaValueText = convertSecondsToTimecode(seconds);
 
 			if (options.onmousedown) {
-				node.onmousedown = options.onmousedown;
+				node.addEventListener('mousedown', options.onmousedown);
 			}
 
-			return () => {};
+			return () => {
+				if (options.onmousedown) {
+					node.removeEventListener('mousedown', options.onmousedown);
+				}
+			};
 		});
 	}
 </script>
@@ -36,6 +40,7 @@
 		visibleRange: RangeInterval;
 
 		onBarInteract: (ev: MouseEvent, mouseInInterval: number) => void;
+		onBarDoubleClick?: (ev: MouseEvent) => void;
 		onDrag: (delta: number) => void;
 
 		cursor?: string;
@@ -48,6 +53,7 @@
 		dragging = $bindable(),
 		visibleRange,
 		onBarInteract,
+		onBarDoubleClick,
 		onDrag,
 		cursor,
 		children
@@ -116,6 +122,7 @@
 	bind:clientWidth
 	role="presentation"
 	onmousedown={handleBarMouseDown}
+	ondblclick={onBarDoubleClick}
 >
 	{@render children(clientWidth!, eventStartDragging)}
 </div>
