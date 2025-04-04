@@ -39,9 +39,25 @@
 
 	function onDrag(delta: number) {
 		if (dragging === 'start') {
-			markingRange.start = Math.min(markingRange.start + delta, markingRange.end);
+			const newRangeStart = markingRange.start + delta;
+
+			if (newRangeStart <= markingRange.end) {
+				markingRange.start = newRangeStart;
+			} else {
+				// Switch to dragging the end handle
+				markingRange.start = markingRange.end;
+				dragging = 'end';
+			}
 		} else if (dragging === 'end') {
-			markingRange.end = Math.max(markingRange.start, markingRange.end + delta);
+			const newRangeEnd = markingRange.end + delta;
+
+			if (newRangeEnd >= markingRange.start) {
+				markingRange.end = newRangeEnd;
+			} else {
+				// Switch to dragging the start handle
+				markingRange.end = markingRange.start;
+				dragging = 'start';
+			}
 		}
 
 		markingRange = constrainRangeInterval(markingRange);
