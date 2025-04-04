@@ -9,12 +9,23 @@
 	import Timecode from './Timecode.svelte';
 
 	interface Props {
+		playhead: number;
+		mediaPlayhead: number;
 		markingRange: RangeInterval;
 		visibleRange: RangeInterval;
 		duration: number;
 	}
 
-	let { markingRange = $bindable(), visibleRange, duration }: Props = $props();
+	let {
+		playhead,
+		mediaPlayhead,
+		markingRange = $bindable(),
+		visibleRange,
+		duration
+	}: Props = $props();
+
+	let playheadInView = $derived(convertGlobalToRangeSpace(playhead, visibleRange));
+	let mediaPlayheadInView = $derived(convertGlobalToRangeSpace(mediaPlayhead, visibleRange));
 
 	let markingRangeInView = $derived<RangeInterval>({
 		start: convertGlobalToRangeSpace(markingRange.start, visibleRange),
@@ -38,23 +49,18 @@
 
 	function onBarInteract(ev: MouseEvent, mouseInInterval: number) {
 		if (ev.buttons === 1) {
-			if (!isTrimmingActive) {
-				// Start trimming from this position
-				markingRange = { start: mouseInInterval, end: mouseInInterval };
-				dragging = 'end';
-			}
+			// Start trimming from this position
+			markingRange = { start: mouseInInterval, end: mouseInInterval };
+			dragging = 'end';
 		}
 	}
 </script>
 
-<InteractiveTimelineBar
-	bind:dragging
-	{visibleRange}
-	{onBarInteract}
-	{onDrag}
-	cursor={isTrimmingActive ? undefined : 'text'}
->
+<InteractiveTimelineBar bind:dragging {visibleRange} {onBarInteract} {onDrag} cursor="text">
 	{#snippet children(clientWidth, eventStartDragging)}
+		<div class="playhead" style="--x: {mediaPlayheadInView * clientWidth}px;"></div>
+		<div class="playhead cursor" style="--x: {playheadInView * clientWidth}px;"></div>
+
 		{#if isTrimmingActive}
 			{@const start = markingRangeInView.start}
 			{@const end = markingRangeInView.end}
@@ -105,6 +111,21 @@
 
 	$handle-width: 24px;
 	$handle-interaction-padding: 20px;
+
+	.playhead {
+		position: absolute;
+		height: 100%;
+		width: 1px;
+		pointer-events: none;
+
+		border-radius: 0 0 100vw 100vw;
+		transform: translateX(var(--x));
+		background-color: scheme.var-color('primary');
+	}
+
+	.cursor {
+		background-color: white;
+	}
 
 	.handle {
 		position: absolute;

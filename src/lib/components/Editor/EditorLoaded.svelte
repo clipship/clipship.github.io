@@ -67,16 +67,6 @@
 		controlledTime = [markingRangeStart * videoDuration];
 	}
 
-	let isTrimmingActive = $derived(markingRange.start > 0 || markingRange.end < 1);
-
-	function setTrimmingActive(active: boolean) {
-		if (active) {
-			markingRange = { start: playheadPosition, end: playheadPosition };
-		} else {
-			markingRange = { start: 0, end: 1 };
-		}
-	}
-
 	function handleKeyDown(ev: KeyboardEvent) {
 		const focused = ev.target;
 		if (focused instanceof HTMLInputElement) {
@@ -104,8 +94,6 @@
 		{snapToStart}
 		bind:paused
 		bind:loop
-		{isTrimmingActive}
-		{setTrimmingActive}
 		currentTime={videoCurrentTime}
 		duration={videoDuration}
 	/>
