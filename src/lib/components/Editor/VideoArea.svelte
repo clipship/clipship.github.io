@@ -19,7 +19,14 @@
 
 <div>
 	<!-- svelte-ignore a11y_media_has_caption -->
-	<video src={fileBlobUrl} muted bind:paused bind:currentTime bind:duration></video>
+	<video
+		src={fileBlobUrl}
+		muted
+		bind:paused
+		bind:currentTime
+		bind:duration
+		onended={() => (paused = false)}
+	></video>
 </div>
 
 <style lang="scss">

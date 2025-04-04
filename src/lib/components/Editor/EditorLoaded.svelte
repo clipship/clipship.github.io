@@ -54,6 +54,10 @@
 		if (!isCursorAfterClip && isMediaPlayheadAfterClip) {
 			if (loop) {
 				controlledTime = [markingRange.start * videoDuration];
+
+				if (markingRange.end >= 1) {
+					paused = false;
+				}
 			} else {
 				paused = true;
 				controlledTime = [playheadPosition * videoDuration];
