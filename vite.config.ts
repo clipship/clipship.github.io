@@ -1,6 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { svelteTesting } from '@testing-library/svelte/vite';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [sveltekit()],
@@ -13,7 +13,7 @@ export default defineConfig({
 	},
 
 	optimizeDeps: {
-		exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', '@ffmpeg/core']
+		exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/core']
 	},
 
 	test: {
@@ -22,13 +22,27 @@ export default defineConfig({
 				extends: './vite.config.ts',
 				plugins: [svelteTesting()],
 
+				optimizeDeps: {
+					include: ['@testing-library/jest-dom/vitest', '@testing-library/svelte']
+				},
+
+				resolve: {
+					conditions: ['browser']
+				},
+
 				test: {
 					name: 'client',
 					environment: 'jsdom',
 					clearMocks: true,
 					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
 					exclude: ['src/lib/server/**'],
-					setupFiles: ['./vitest-setup-client.ts']
+					setupFiles: ['./vitest-setup-client.ts'],
+
+					browser: {
+						enabled: true,
+						provider: 'playwright',
+						instances: [{ browser: 'chromium' }]
+					}
 				}
 			},
 			{

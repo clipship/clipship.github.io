@@ -1,4 +1,6 @@
-import type { FFFSType, FFmpeg, LogEvent } from '@ffmpeg/ffmpeg';
+import urlFFmpegCoreWasm from '@ffmpeg/core/wasm?url';
+import urlFFmpegCore from '@ffmpeg/core?url';
+import { FFmpeg, type FFFSType, type LogEvent } from '@ffmpeg/ffmpeg';
 
 const MOUNT_POINT = '/input';
 
@@ -8,6 +10,16 @@ export class FFmpegApi {
 
 	constructor(private readonly ffmpeg: FFmpeg) {
 		ffmpeg.createDir(MOUNT_POINT);
+	}
+
+	static async load() {
+		const ffmpeg = new FFmpeg();
+		await ffmpeg.load({
+			coreURL: urlFFmpegCore,
+			wasmURL: urlFFmpegCoreWasm
+		});
+
+		return new FFmpegApi(ffmpeg);
 	}
 
 	get enableLogging() {
