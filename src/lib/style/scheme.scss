@@ -9,13 +9,13 @@
 }
 
 @mixin color($name, $color) {
-	#{color-key($name, -2)}: #{sass.adjust($color, $lightness: -40%, $saturation: -50%)};
-	#{color-key($name, -1)}: #{sass.adjust($color, $lightness: -25%, $saturation: -40%)};
+	#{color-key($name, -2)}: #{sass.scale($color, $lightness: -70%, $saturation: -50%)};
+	#{color-key($name, -1)}: #{sass.scale($color, $lightness: -30%, $saturation: -50%)};
 
 	#{color-key($name)}: #{$color};
 
-	#{color-key($name, +1)}: #{sass.adjust($color, $lightness: 20%)};
-	#{color-key($name, +2)}: #{sass.adjust($color, $lightness: 30%)};
+	#{color-key($name, +1)}: #{sass.scale($color, $lightness: 35%)};
+	#{color-key($name, +2)}: #{sass.scale($color, $lightness: 50%)};
 }
 
 $primary: #ff4b33;
@@ -31,5 +31,5 @@ $neutral: #48415f;
 	#{color-key('text')}: white;
 	#{color-key('text-dark')}: var-color('background');
 
-	--color-wave-form: #{sass.adjust($primary, $lightness: 20%)};
+	--color-wave-form: #{sass.scale($primary, $lightness: 35%)};
 }
