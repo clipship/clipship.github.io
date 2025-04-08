@@ -1,6 +1,7 @@
+import { FFmpeg, type FFFSType, type LogEvent } from '@ffmpeg/ffmpeg';
+
 import urlFFmpegCoreWasm from '@ffmpeg/core/wasm?url';
 import urlFFmpegCore from '@ffmpeg/core?url';
-import { FFmpeg, type FFFSType, type LogEvent } from '@ffmpeg/ffmpeg';
 
 const MOUNT_POINT = '/input';
 
@@ -66,10 +67,16 @@ export class FFmpegApi {
 		}
 	}
 
-	async probe(file: File): Promise<FFprobeOutput> {
-		const jsonOutputFile = `${file.name}-ffprobe.json`;
+	async dispose() {
+		await this.unmount();
+		this.ffmpeg.terminate();
+	}
 
-		await this.useMountedFile(file, (mountedFilePath) =>
+	async probe(file: File | string): Promise<FFprobeOutput> {
+		const fileName = file instanceof File ? file.name : file;
+		const jsonOutputFile = `${fileName}-ffprobe.json`;
+
+		const probeFilePath = (mountedFilePath: string) =>
 			this.ffmpeg.ffprobe([
 				...['-loglevel', 'warning'],
 				...['-print_format', 'json'],
@@ -77,8 +84,13 @@ export class FFmpegApi {
 				'-show_streams',
 				mountedFilePath,
 				...['-o', jsonOutputFile]
-			])
-		);
+			]);
+
+		if (file instanceof File) {
+			await this.useMountedFile(file, probeFilePath);
+		} else {
+			await probeFilePath(file);
+		}
 
 		const outputFileData = await this.ffmpeg.readFile(jsonOutputFile, 'utf8');
 		return JSON.parse(outputFileData as string);
@@ -118,13 +130,77 @@ export class FFmpegApi {
 
 		return result;
 	}
+
+	async convert(file: File, options: ConvertOptions): Promise<ConversionResult> {
+		const { includeVideo, audio, trimming } = options;
+
+		let videoFileExtension = 'mp4';
+		if (file.name.includes('.')) {
+			videoFileExtension = file.name.slice(file.name.lastIndexOf('.') + 1);
+		}
+
+		const fileExtension = includeVideo ? videoFileExtension : 'opus';
+		const outputFile = `${file.name}-trim.${fileExtension}`;
+
+		const reencode = trimming?.highPrecision ?? false;
+
+		await this.useMountedFile(file, (mountedFilePath) => {
+			return this.ffmpeg.exec([
+				...['-loglevel', 'info'],
+				// Always overwrite files
+				'-y',
+
+				...['-i', mountedFilePath],
+
+				// Trim input
+				...(trimming ? ['-ss', `${trimming.start}`, '-to', `${trimming.end}`] : []),
+
+				// Include video
+				...(includeVideo ? ['-map', '0:v?'] : []),
+
+				// Include audio streams
+				...audio.streamIds.flatMap((audioStreamId) => ['-map', `0:a:${audioStreamId}`]),
+
+				// Mix audio streams into a single output stream
+				...(audio.singleOutputStream && audio.streamIds.length >= 2
+					? [
+							'-filter_complex',
+							`amix=inputs=${audio.streamIds.length}:dropout_transition=0:normalize=0`
+						]
+					: []),
+
+				// Avoid re-encoding to drastically speed up the process
+				...(!reencode ? ['-c:v', 'copy'] : []),
+
+				// Opus codec settings for audio-only output
+				...(!includeVideo
+					? [
+							...['-c:a', 'libopus'],
+
+							// Use small frames to achieve high precision output duration
+							...(trimming ? ['-frame_duration', '2.5'] : [])
+						]
+					: []),
+
+				outputFile
+			]);
+		});
+
+		const outputFileBytes = await this.ffmpeg.readFile(outputFile);
+		const outputFileBuffer = (outputFileBytes as Uint8Array).buffer;
+
+		return {
+			outputFileInFFmpeg: outputFile,
+			outputBuffer: outputFileBuffer as ArrayBuffer
+		};
+	}
 }
 
 export interface AudioStreamExtraction {
 	wavBuffer: ArrayBuffer;
 }
 
-interface FFprobeStream {
+export interface FFprobeStream {
 	index: number;
 	codec_type: 'video' | 'audio';
 
@@ -137,4 +213,34 @@ interface FFprobeStream {
 
 export interface FFprobeOutput {
 	streams: FFprobeStream[];
+	format: {
+		/** Offset in seconds, represented as a string. */
+		start_time: string;
+
+		/** Duration in seconds, represented as a string. */
+		duration: string;
+	};
+}
+
+interface ConvertOptions {
+	includeVideo: boolean;
+	audio: {
+		streamIds: number[];
+		singleOutputStream: boolean;
+	};
+	trimming?: {
+		/** Re-encodes the input (can be very slow with ffmpeg.wasm). */
+		highPrecision: boolean;
+
+		/** Start time in seconds. */
+		start: number;
+
+		/** End time in seconds. */
+		end: number;
+	};
+}
+
+export interface ConversionResult {
+	outputFileInFFmpeg: string;
+	outputBuffer: ArrayBuffer;
 }
