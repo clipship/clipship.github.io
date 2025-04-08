@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import type { FFmpegApi } from '../util/ffmpeg-api';
-	import { useFFmpeg } from '../util/FFmpegProvider.svelte';
+	import type { FFmpegApi } from '$lib/ffmpeg/ffmpeg-api';
+	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
 	import EditorLoaded from './EditorLoaded.svelte';
 	import FilePicker from './FilePicker.svelte';
 	import { type TrackState } from './TimelineArea/TimelineArea.svelte';

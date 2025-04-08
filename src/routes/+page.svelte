@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Editor from '$lib/components/Editor/Editor.svelte';
-	import FFmpegProvider from '$lib/components/util/FFmpegProvider.svelte';
+	import FFmpegProvider from '$lib/ffmpeg/FFmpegProvider.svelte';
 </script>
 
 <FFmpegProvider>
