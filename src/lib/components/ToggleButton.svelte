@@ -31,6 +31,10 @@
 	outline
 	onclick={() => (value = !value)}
 	disabled={value ? false : 'visual-only'}
+	buttonProps={{
+		role: 'switch',
+		'aria-checked': value ? 'true' : 'false'
+	}}
 >
 	{@render children()}
 </IconButton>

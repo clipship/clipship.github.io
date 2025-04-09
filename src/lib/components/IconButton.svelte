@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Icon as IconType } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
+	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import Anchor from './Tooltip/Anchor.svelte';
 
 	export type Color = 'primary' | 'secondary' | 'neutral';
@@ -15,9 +16,12 @@
 		disableMouseFocus?: boolean;
 		onclick: (ev: MouseEvent) => void;
 		children: Snippet;
+
+		buttonProps?: Omit<HTMLButtonAttributes, 'children' | 'disabled' | 'onclick'>;
 	}
 
 	let {
+		buttonProps,
 		icon: Icon,
 		stroke = false,
 		color = 'primary',
@@ -35,6 +39,7 @@
 
 <Anchor>
 	<button
+		{...buttonProps}
 		data-color={color}
 		{onclick}
 		onmousedown={disableMouseFocus ? preventFocusOnMouseDown : undefined}
@@ -42,7 +47,7 @@
 		disabled={disabled === true}
 		class:visual-disabled={disabled === 'visual-only'}
 	>
-		<Icon fill={stroke ? 'transparent' : 'currentColor'} />
+		<Icon fill={stroke ? 'transparent' : 'currentColor'} aria-hidden />
 	</button>
 
 	{#snippet tooltip()}
