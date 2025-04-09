@@ -1,9 +1,10 @@
 <script lang="ts">
 	interface Props {
+		ariaHidden?: boolean;
 		onPickFile: (file: File) => void;
 	}
 
-	let { onPickFile }: Props = $props();
+	let { ariaHidden, onPickFile }: Props = $props();
 
 	let input = $state<HTMLInputElement>();
 	let files = $state<FileList>();
@@ -20,7 +21,7 @@
 	}
 </script>
 
-<input type="file" bind:this={input} bind:files />
+<input type="file" bind:this={input} bind:files hidden={ariaHidden === true} />
 
 <style lang="scss">
 	input {

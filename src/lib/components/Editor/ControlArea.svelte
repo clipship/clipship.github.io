@@ -36,7 +36,7 @@
 	let fileInput = $state<FileInput>();
 </script>
 
-<FileInput bind:this={fileInput} onPickFile={onOpenFile} />
+<FileInput bind:this={fileInput} onPickFile={onOpenFile} ariaHidden />
 
 <div class="grid">
 	<div class="sub-area margin-right">
