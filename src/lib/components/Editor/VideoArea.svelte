@@ -2,6 +2,7 @@
 	interface Props {
 		file: File;
 
+		unpauseOnEnd: boolean;
 		paused: boolean;
 		currentTime: number;
 		readonly duration: number;
@@ -9,6 +10,7 @@
 
 	let {
 		file,
+		unpauseOnEnd,
 		paused = $bindable(),
 		currentTime = $bindable(),
 		duration = $bindable()
@@ -25,7 +27,11 @@
 		bind:paused
 		bind:currentTime
 		bind:duration
-		onended={() => (paused = false)}
+		onended={() => {
+			if (unpauseOnEnd) {
+				paused = false;
+			}
+		}}
 	></video>
 </div>
 

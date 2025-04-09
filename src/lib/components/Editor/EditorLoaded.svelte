@@ -92,7 +92,13 @@
 <svelte:window onkeydown={handleKeyDown} />
 
 <div>
-	<VideoArea {file} {paused} bind:currentTime={videoCurrentTime} bind:duration={videoDuration} />
+	<VideoArea
+		{file}
+		unpauseOnEnd={loop}
+		{paused}
+		bind:currentTime={videoCurrentTime}
+		bind:duration={videoDuration}
+	/>
 
 	<ControlArea
 		{snapToStart}
