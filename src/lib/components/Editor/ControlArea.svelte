@@ -1,9 +1,12 @@
 <script lang="ts">
+	import ClapperboardIcon from '@lucide/svelte/icons/clapperboard';
+	import FolderUpIcon from '@lucide/svelte/icons/folder-up';
 	import PauseIcon from '@lucide/svelte/icons/pause';
 	import PlayIcon from '@lucide/svelte/icons/play';
 	import Repeat2Icon from '@lucide/svelte/icons/repeat-2';
 	import RewindIcon from '@lucide/svelte/icons/rewind';
 
+	import FileInput from '../FileInput.svelte';
 	import IconButton from '../IconButton.svelte';
 	import ToggleButton from '../ToggleButton.svelte';
 	import Timecode from './TimelineArea/Timecode.svelte';
@@ -14,6 +17,9 @@
 		loop: boolean;
 		currentTime: number;
 		duration: number;
+
+		onOpenFile: (file: File) => void;
+		exportClip: () => void;
 	}
 
 	let {
@@ -21,18 +27,31 @@
 		paused = $bindable(),
 		loop = $bindable(),
 		currentTime,
-		duration
+		duration,
+
+		onOpenFile,
+		exportClip
 	}: Props = $props();
+
+	let fileInput = $state<FileInput>();
 </script>
 
+<FileInput bind:this={fileInput} onPickFile={onOpenFile} />
+
 <div class="grid">
-	<div class="flex left">
-		<div class="time">
-			<Timecode seconds={currentTime} />
-		</div>
+	<div class="sub-area margin-right">
+		<IconButton icon={FolderUpIcon} onclick={() => fileInput!.open()} color="neutral" stroke>
+			Open File
+		</IconButton>
 	</div>
 
-	<div class="flex center">
+	<div class="sub-area wide-gap">
+		<div class="flex left">
+			<div class="time">
+				<Timecode seconds={currentTime} />
+			</div>
+		</div>
+
 		<div class="flex">
 			<IconButton icon={RewindIcon} onclick={snapToStart} color="neutral" disableMouseFocus>
 				Go to Start
@@ -50,10 +69,15 @@
 				{loop ? 'Disable Loop' : 'Enable Loop'}
 			</ToggleButton>
 		</div>
-	</div>
 
-	<div class="flex right">
-		<Timecode seconds={duration} />
+		<div class="flex right">
+			<Timecode seconds={duration} />
+		</div>
+	</div>
+	<div class="sub-area margin-left">
+		<IconButton icon={ClapperboardIcon} onclick={exportClip} stroke color="secondary">
+			Export
+		</IconButton>
 	</div>
 </div>
 
@@ -63,11 +87,27 @@
 	.grid {
 		display: grid;
 		grid-template-columns: 1fr max-content 1fr;
-		justify-self: center;
-		gap: 24px;
-		padding: 8px 24px;
+	}
+
+	.sub-area {
+		display: flex;
+		gap: 4px;
+		padding: 8px;
 		border: 1px solid scheme.var-color('neutral');
 		border-radius: 20px;
+	}
+
+	.wide-gap {
+		gap: 24px;
+		padding: 8px 24px;
+	}
+
+	.margin-right {
+		margin-right: auto;
+	}
+
+	.margin-left {
+		margin-left: auto;
 	}
 
 	.flex {

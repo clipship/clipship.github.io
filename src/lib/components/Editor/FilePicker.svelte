@@ -1,24 +1,17 @@
 <script lang="ts">
+	import FileInput from '../FileInput.svelte';
+
 	interface Props {
 		onPickFile: (file: File) => void;
 	}
 
 	let { onPickFile }: Props = $props();
-
-	let files = $state<FileList>();
-	let pickedFile = $derived(files ? files.item(0) : null);
-
-	$effect(() => {
-		if (pickedFile) {
-			onPickFile(pickedFile);
-		}
-	});
 </script>
 
 <label>
 	Open video file
 
-	<input type="file" bind:files />
+	<FileInput {onPickFile} />
 </label>
 
 <style lang="scss">
@@ -26,11 +19,5 @@
 
 	label {
 		@extend %button;
-	}
-
-	input {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
 	}
 </style>

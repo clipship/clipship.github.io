@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
 	import { untrack } from 'svelte';
 	import Audio from './Audio.svelte';
 	import ControlArea from './ControlArea.svelte';
@@ -12,7 +13,7 @@
 		tracks: TrackState[];
 	}
 
-	let { file, tracks = $bindable() }: Props = $props();
+	let { file = $bindable(), tracks = $bindable() }: Props = $props();
 
 	let playheadPosition = $state(0);
 	let markingRange = $state<RangeInterval>({ start: 0, end: 1 });
@@ -71,6 +72,42 @@
 		controlledTime = [markingRangeStart * videoDuration];
 	}
 
+	function onOpenFile(newFile: File) {
+		paused = true;
+		playheadPosition = 0;
+		markingRange = { start: 0, end: 1 };
+
+		file = newFile;
+	}
+
+	const { ffmpeg } = useFFmpeg();
+
+	async function exportClip() {
+		const isTrimmingActive = markingRange.start > 0 || markingRange.end < 1;
+
+		const doPreciseTrimming = true;
+
+		const { outputFileInFFmpeg } = await $ffmpeg!.convert(file, {
+			includeVideo: false,
+			audio: {
+				streamIds: [],
+				singleOutputStream: true
+			},
+			trimming: isTrimmingActive
+				? {
+						highPrecision: doPreciseTrimming,
+						start: markingRange.start * videoDuration,
+						end: markingRange.end * videoDuration
+					}
+				: undefined
+		});
+
+		console.log('done');
+
+		const probeResult = await $ffmpeg!.probe(outputFileInFFmpeg);
+		console.log(probeResult);
+	}
+
 	function handleKeyDown(ev: KeyboardEvent) {
 		const focused = ev.target;
 		if (focused instanceof HTMLInputElement) {
@@ -106,6 +143,8 @@
 		bind:loop
 		currentTime={videoCurrentTime}
 		duration={videoDuration}
+		{onOpenFile}
+		{exportClip}
 	/>
 
 	{#if tracks.length > 0}

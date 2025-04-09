@@ -59,7 +59,7 @@
 	</div>
 {:else}
 	<div>
-		<EditorLoaded {file} bind:tracks />
+		<EditorLoaded bind:file bind:tracks />
 	</div>
 {/if}
 
