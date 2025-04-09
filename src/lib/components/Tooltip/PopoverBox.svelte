@@ -6,9 +6,11 @@
 	interface Props {
 		reference: HTMLElement;
 		popover: Snippet;
+
+		readonly renderedText?: string;
 	}
 
-	let { reference, popover }: Props = $props();
+	let { reference, popover, renderedText = $bindable() }: Props = $props();
 
 	let rect = $state(reference.getBoundingClientRect());
 
@@ -40,6 +42,7 @@
 		};
 	});
 
+	let child = $state<HTMLElement>();
 	let childWidth = $state(0);
 	let childHeight = $state(0);
 
@@ -56,6 +59,21 @@
 
 	let childX = $derived(Math.min(Math.max(childXUnclamped, VIEWPORT_MARGIN), maxX));
 	let childY = $derived(Math.min(Math.max(childYUnclamped, VIEWPORT_MARGIN), maxY));
+
+	// Update renderedText whenever the content of the popover changes
+	onMount(() => {
+		renderedText = child!.innerText;
+
+		const observer = new MutationObserver(() => {
+			renderedText = child!.innerText;
+		});
+
+		observer.observe(child!, { characterData: true, childList: true, subtree: true });
+
+		return () => {
+			observer.disconnect();
+		};
+	});
 </script>
 
 <svelte:window
@@ -66,6 +84,7 @@
 />
 
 <div
+	bind:this={child}
 	class="child"
 	bind:clientWidth={childWidth}
 	bind:clientHeight={childHeight}

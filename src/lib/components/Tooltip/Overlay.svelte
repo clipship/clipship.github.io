@@ -18,6 +18,7 @@
 	export class PopoverState<TProps = any> {
 		options: Popover;
 		props = $state<TProps>();
+		renderedText = $state<string>();
 
 		constructor(options: Popover, props?: TProps) {
 			this.options = options;
@@ -41,16 +42,14 @@
 </script>
 
 <div class="overlay">
-	{#each globalPopovers as popover}
-		{@const Popover = popover.options.component}
-		{@const content = popover.options.content}
-		{@const reference = popover.options.anchorElement.children.item(0) as HTMLElement}
+	{#each globalPopovers as popoverState}
+		{@const Popover = popoverState.options.component}
+		{@const content = popoverState.options.content}
+		{@const reference = popoverState.options.anchorElement.children.item(0) as HTMLElement}
 
-		{@const popoverProps = popover.props}
-
-		<PopoverBox {reference}>
+		<PopoverBox {reference} bind:renderedText={popoverState.renderedText}>
 			{#snippet popover()}
-				<Popover {...popoverProps}>
+				<Popover {...popoverState.props}>
 					{@render content()}
 				</Popover>
 			{/snippet}

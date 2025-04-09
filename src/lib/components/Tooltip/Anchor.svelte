@@ -27,6 +27,12 @@
 		}
 	});
 
+	$effect(() => {
+		if (popoverState?.renderedText) {
+			anchorElement!.children[0].ariaLabel = popoverState.renderedText;
+		}
+	});
+
 	onMount(() => {
 		const popover: Popover = {
 			anchorElement: anchorElement!,

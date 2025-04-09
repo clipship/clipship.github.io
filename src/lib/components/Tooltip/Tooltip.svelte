@@ -9,14 +9,14 @@
 	let { visible, children }: Props = $props();
 </script>
 
-<div role="tooltip" class:visible>
+<div aria-hidden="true" class:visible>
 	{@render children()}
 </div>
 
 <style lang="scss">
 	@use '$lib/style/scheme';
 
-	[role='tooltip'] {
+	div {
 		margin: 6px;
 		opacity: 0;
 		translate: 0 4px;
