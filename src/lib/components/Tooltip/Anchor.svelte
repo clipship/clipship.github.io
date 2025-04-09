@@ -20,10 +20,12 @@
 
 	let popoverState = $state<PopoverState<TooltipState>>();
 	let hovered = $state(false);
+	let focused = $state(false);
+	let show = $derived(hovered || focused);
 
 	$effect(() => {
 		if (popoverState) {
-			popoverState.props!.visible = keepVisible || hovered;
+			popoverState.props!.visible = keepVisible || show;
 		}
 	});
 
@@ -56,6 +58,8 @@
 	bind:this={anchorElement}
 	onmouseenter={() => (hovered = true)}
 	onmouseleave={() => (hovered = false)}
+	onfocusin={() => (focused = true)}
+	onfocusout={() => (focused = false)}
 >
 	{@render children()}
 </div>
