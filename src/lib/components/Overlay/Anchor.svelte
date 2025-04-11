@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
-	import { globalOverlay, PopoverState, type Popover } from './Overlay.svelte';
+	import { globalOverlay, PopoverState } from './Overlay.svelte';
 	import Tooltip from './Tooltip.svelte';
 
 	interface Props {
@@ -36,18 +36,19 @@
 	});
 
 	onMount(() => {
-		const popover: Popover = {
-			anchorElement: anchorElement!,
-			component: Tooltip,
-			content: tooltip
-		};
-
-		popoverState = globalOverlay.mountPopover<TooltipState>(popover, {
-			visible: keepVisible
-		});
+		popoverState = globalOverlay.mountPopover<TooltipState>(
+			{
+				anchorElement: anchorElement!,
+				component: Tooltip,
+				content: tooltip
+			},
+			{
+				visible: keepVisible
+			}
+		);
 
 		return () => {
-			globalOverlay.unmountPopover(popover);
+			popoverState!.unmount();
 		};
 	});
 </script>

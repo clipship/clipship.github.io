@@ -12,7 +12,6 @@
 
 	export interface OverlayContext {
 		mountPopover<TProps>(popover: Popover<TProps>, props?: TProps): PopoverState<TProps>;
-		unmountPopover(popover: Popover): void;
 	}
 
 	export class PopoverState<TProps = any> {
@@ -20,9 +19,12 @@
 		props = $state<TProps>();
 		renderedText = $state<string>();
 
-		constructor(options: Popover, props?: TProps) {
+		unmount: () => void;
+
+		constructor(unmount: () => void, options: Popover, props?: TProps) {
 			this.options = options;
 			this.props = props;
+			this.unmount = unmount;
 		}
 	}
 
@@ -30,14 +32,17 @@
 
 	export const globalOverlay: OverlayContext = {
 		mountPopover: <TProps,>(popover: Popover<TProps>, props?: TProps) => {
-			const state = new PopoverState<TProps>(popover, props);
+			const state = new PopoverState<TProps>(
+				() => {
+					globalPopovers = globalPopovers.filter((someState) => someState !== state);
+				},
+				popover,
+				props
+			);
 
 			globalPopovers.push(state);
 			return state;
-		},
-
-		unmountPopover: (popover) =>
-			(globalPopovers = globalPopovers.filter((item) => item.options !== popover))
+		}
 	};
 </script>
 
