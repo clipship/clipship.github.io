@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Anchor from '$lib/components/Tooltip/Anchor.svelte';
+	import Anchor from '$lib/components/Overlay/Anchor.svelte';
 	import InteractiveTimelineBar, { timelineA11y } from './InteractiveTimelineBar.svelte';
 	import {
 		constrainRangeInterval,

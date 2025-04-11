@@ -2,7 +2,7 @@
 	import type { Icon as IconType } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
-	import Anchor from './Tooltip/Anchor.svelte';
+	import Anchor from './Overlay/Anchor.svelte';
 
 	export type Color = 'primary' | 'secondary' | 'neutral';
 

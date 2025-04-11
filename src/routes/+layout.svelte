@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte';
-	import Overlay from '$lib/components/Tooltip/Overlay.svelte';
+	import Overlay from '$lib/components/Overlay/Overlay.svelte';
 	import '$lib/style/global.scss';
 	import '@fontsource-variable/montserrat';
 	import '@fontsource/arvo';
