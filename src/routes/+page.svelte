@@ -1,21 +1,18 @@
 <script lang="ts">
 	import Editor from '$lib/components/Editor/Editor.svelte';
 	import Dialog from '$lib/components/Overlay/Dialog.svelte';
-	import Modal from '$lib/components/Overlay/Modal.svelte';
 	import FFmpegProvider from '$lib/ffmpeg/FFmpegProvider.svelte';
 
 	let visible = $state(false);
 </script>
 
 <FFmpegProvider>
-	<div class="editor" inert={visible}>
+	<div class="editor">
 		<Editor />
 	</div>
 </FFmpegProvider>
 
-<Modal>
-	<Dialog bind:visible title="Le Dialog Title">This is body.</Dialog>
-</Modal>
+<Dialog bind:visible title="Le Dialog Title">This is body.</Dialog>
 
 <svelte:window
 	onkeydown={(ev) => {

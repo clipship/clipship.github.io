@@ -9,10 +9,10 @@
 	let { children }: { children: Snippet } = $props();
 </script>
 
-<Overlay />
+<Overlay>
+	<Header />
 
-<Header />
+	{@render children()}
 
-{@render children()}
-
-<!-- <Footer /> -->
+	<!-- <Footer /> -->
+</Overlay>

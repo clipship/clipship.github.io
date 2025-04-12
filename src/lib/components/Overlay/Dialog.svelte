@@ -2,8 +2,8 @@
 	import XIcon from '@lucide/svelte/icons/x';
 
 	import type { Snippet } from 'svelte';
-	import { fade, fly } from 'svelte/transition';
 	import IconButton from '../IconButton.svelte';
+	import Modal from './Modal.svelte';
 
 	interface Props {
 		visible: boolean;
@@ -22,18 +22,15 @@
 			focusedElement.blur();
 		}
 	}
+
+	let headerId = $state(crypto.randomUUID());
 </script>
 
-{#if visible}
-	<div class="backdrop" transition:fade={{ duration: 250 }}>
-		<div
-			class="dialog"
-			role="dialog"
-			aria-modal="true"
-			transition:fly={{ duration: 500, y: 20, opacity: 1 }}
-		>
+<Modal {visible}>
+	<div class="backdrop" class:visible aria-hidden={!visible}>
+		<div class="dialog" role="dialog" aria-modal="true" aria-labelledby={headerId}>
 			<div class="header">
-				<h1>{title}</h1>
+				<h1 id={headerId}>{title}</h1>
 
 				<IconButton icon={XIcon} onclick={close}>Close</IconButton>
 			</div>
@@ -42,7 +39,7 @@
 			</div>
 		</div>
 	</div>
-{/if}
+</Modal>
 
 <style lang="scss">
 	@use '$lib/style/scheme';
@@ -56,7 +53,23 @@
 		display: grid;
 		place-content: center;
 
-		pointer-events: all;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.5s;
+
+		.dialog {
+			transform: translateY(20px);
+			transition: transform 0.5s;
+		}
+
+		&.visible {
+			opacity: 1;
+			pointer-events: all;
+
+			.dialog {
+				transform: translateY(0px);
+			}
+		}
 	}
 
 	.dialog {

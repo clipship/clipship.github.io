@@ -35,6 +35,7 @@
 
 	export class ModalState {
 		options: Modal;
+		visible = $state(false);
 		unmount: () => void;
 
 		constructor(unmount: () => void, options: Modal) {
@@ -45,6 +46,7 @@
 
 	let globalPopovers = $state<PopoverState[]>([]);
 	let globalModals = $state<ModalState[]>([]);
+	let visibleModals = $derived(globalModals.filter((modal) => modal.visible));
 
 	export const globalOverlay: OverlayContext = {
 		mountPopover: <TProps,>(popover: Popover<TProps>, props: TProps) => {
@@ -71,6 +73,14 @@
 	};
 </script>
 
+<script lang="ts">
+	interface Props {
+		children: Snippet;
+	}
+
+	let { children }: Props = $props();
+</script>
+
 <div class="overlay">
 	{#each globalModals as modalState}
 		{@render modalState.options.modal()}
@@ -91,6 +101,10 @@
 	{/each}
 </div>
 
+<div class="body" inert={visibleModals.length > 0}>
+	{@render children()}
+</div>
+
 <style lang="scss">
 	.overlay {
 		position: absolute;
@@ -100,5 +114,9 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
+	}
+
+	.body {
+		display: contents;
 	}
 </style>
