@@ -5,8 +5,19 @@
 	transition-duration: 0.5s;
 
 	&:hover,
-	&:focus-within {
+	&:focus-visible {
 		transition-duration: 0.1s;
+	}
+}
+
+@mixin reactive-color($color) {
+	background-color: scheme.var-color($color);
+	box-shadow: 4px 4px 0 scheme.var-color($color, -1);
+
+	&:hover,
+	&:focus-visible {
+		background-color: scheme.var-color('text');
+		color: scheme.var-color($color);
 	}
 }
 
@@ -17,10 +28,8 @@
 
 	cursor: pointer;
 	padding: 8px 12px;
-	background-color: scheme.var-color('primary');
 	color: scheme.var-color('text');
 	border: 1px solid scheme.var-color('text');
-	box-shadow: 4px 4px 0 scheme.var-color('primary', -1);
 
 	outline: 2px solid transparent;
 	outline-offset: 0px;
@@ -28,15 +37,22 @@
 	@include transitions-snappy();
 
 	&:hover,
-	&:focus-within {
-		background-color: scheme.var-color('text');
-		color: scheme.var-color('primary');
-
+	&:focus-visible {
 		outline: 2px solid scheme.var-color('text');
 		outline-offset: 4px;
 	}
 
 	&:active {
 		outline-offset: 2px;
+	}
+
+	@include reactive-color('primary');
+
+	&[data-color='secondary'] {
+		@include reactive-color('secondary');
+	}
+
+	&[data-color='neutral'] {
+		@include reactive-color('neutral');
 	}
 }
