@@ -1,4 +1,4 @@
-<script lang="ts" generics="TProps">
+<script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 
 	const VIEWPORT_MARGIN = 0;

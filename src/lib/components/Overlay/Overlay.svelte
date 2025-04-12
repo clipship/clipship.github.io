@@ -10,8 +10,13 @@
 		content: Snippet;
 	}
 
+	export interface Modal {
+		modal: Snippet;
+	}
+
 	export interface OverlayContext {
-		mountPopover<TProps>(popover: Popover<TProps>, props?: TProps): PopoverState<TProps>;
+		mountPopover<TProps>(popover: Popover<TProps>, props: TProps): PopoverState<TProps>;
+		mountModal(modal: Modal): ModalState;
 	}
 
 	export class PopoverState<TProps = any> {
@@ -28,10 +33,21 @@
 		}
 	}
 
+	export class ModalState {
+		options: Modal;
+		unmount: () => void;
+
+		constructor(unmount: () => void, options: Modal) {
+			this.options = options;
+			this.unmount = unmount;
+		}
+	}
+
 	let globalPopovers = $state<PopoverState[]>([]);
+	let globalModals = $state<ModalState[]>([]);
 
 	export const globalOverlay: OverlayContext = {
-		mountPopover: <TProps,>(popover: Popover<TProps>, props?: TProps) => {
+		mountPopover: <TProps,>(popover: Popover<TProps>, props: TProps) => {
 			const state = new PopoverState<TProps>(
 				() => {
 					globalPopovers = globalPopovers.filter((someState) => someState !== state);
@@ -42,11 +58,24 @@
 
 			globalPopovers.push(state);
 			return state;
+		},
+
+		mountModal: (modal: Modal) => {
+			const state = new ModalState(() => {
+				globalModals = globalModals.filter((someState) => someState !== state);
+			}, modal);
+
+			globalModals.push(state);
+			return state;
 		}
 	};
 </script>
 
 <div class="overlay">
+	{#each globalModals as modalState}
+		{@render modalState.options.modal()}
+	{/each}
+
 	{#each globalPopovers as popoverState}
 		{@const Popover = popoverState.options.component}
 		{@const content = popoverState.options.content}
