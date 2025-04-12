@@ -47,12 +47,34 @@
 	}
 
 	@include reactive-color('primary');
+}
 
-	&[data-color='secondary'] {
-		@include reactive-color('secondary');
+$flat-icon-button-size: 32px;
+
+@mixin area($color) {
+	background-color: $color;
+	outline: 10px solid $color;
+}
+
+%flat-icon-button {
+	display: grid;
+	place-content: center;
+	width: $flat-icon-button-size;
+	height: $flat-icon-button-size;
+	cursor: pointer;
+	border-radius: 50%;
+
+	transition: 0.15s;
+
+	@include area(#aaa0);
+
+	&:hover,
+	&:focus-visible {
+		@include area(#aaa3);
 	}
 
-	&[data-color='neutral'] {
-		@include reactive-color('neutral');
+	&:active {
+		@include area(#aaa5);
+		transition-duration: 0s;
 	}
 }

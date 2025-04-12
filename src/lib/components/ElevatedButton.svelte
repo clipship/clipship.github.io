@@ -42,5 +42,13 @@
 
 	button {
 		@extend %button;
+
+		&[data-color='secondary'] {
+			@include components.reactive-color('secondary');
+		}
+
+		&[data-color='neutral'] {
+			@include components.reactive-color('neutral');
+		}
 	}
 </style>

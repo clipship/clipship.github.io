@@ -28,7 +28,7 @@
 	{color}
 	{stroke}
 	{disableMouseFocus}
-	outline
+	variant="outlined"
 	onclick={() => (value = !value)}
 	disabled={value ? false : 'visual-only'}
 	buttonProps={{

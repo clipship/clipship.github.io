@@ -5,12 +5,13 @@
 	import Anchor from './Overlay/Anchor.svelte';
 
 	export type Color = 'primary' | 'secondary' | 'neutral';
+	export type Variant = 'filled' | 'outlined' | 'flat';
 
 	interface Props {
 		icon: typeof IconType;
 		stroke?: boolean;
 		color?: Color;
-		outline?: boolean;
+		variant?: Variant;
 		disabled?: boolean | 'visual-only';
 
 		disableMouseFocus?: boolean;
@@ -25,7 +26,7 @@
 		icon: Icon,
 		stroke = false,
 		color = 'primary',
-		outline = false,
+		variant = 'filled',
 		disabled = false,
 		disableMouseFocus = false,
 		onclick,
@@ -40,10 +41,10 @@
 <Anchor>
 	<button
 		{...buttonProps}
+		data-variant={variant}
 		data-color={color}
 		{onclick}
 		onmousedown={disableMouseFocus ? preventFocusOnMouseDown : undefined}
-		class:outline
 		disabled={disabled === true}
 		class:visual-disabled={disabled === 'visual-only'}
 	>
@@ -60,7 +61,7 @@
 	@use '$lib/style/scheme';
 
 	@mixin reactive-color($color) {
-		&:not(.outline) {
+		&[data-variant='filled'] {
 			background-color: scheme.var-color($color);
 
 			&:hover,
@@ -68,9 +69,13 @@
 			&:active {
 				background-color: scheme.var-color($color, 1);
 			}
+
+			&:active {
+				scale: 0.9;
+			}
 		}
 
-		&.outline {
+		&[data-variant='outlined'] {
 			background-color: scheme.var-color($color, -2);
 			color: scheme.var-color($color);
 			border: 2px solid currentColor;
@@ -80,6 +85,17 @@
 			&:active {
 				color: scheme.var-color($color, 1);
 			}
+
+			&:active {
+				scale: 0.9;
+			}
+		}
+
+		&[data-variant='flat'] {
+			@extend %flat-icon-button;
+
+			padding: 0;
+			color: scheme.var-color($color);
 		}
 	}
 
@@ -94,10 +110,6 @@
 		width: 52px;
 		height: 40px;
 		cursor: pointer;
-
-		&:active {
-			scale: 0.9;
-		}
 
 		&:disabled,
 		&.visual-disabled {

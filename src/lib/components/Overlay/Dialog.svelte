@@ -33,7 +33,14 @@
 			<div class="header">
 				<h1 id={headerId}>{title}</h1>
 
-				<IconButton icon={XIcon} onclick={close}>Close</IconButton>
+				<IconButton
+					icon={XIcon}
+					onclick={close}
+					variant="flat"
+					buttonProps={{
+						tabindex: 0
+					}}>Close</IconButton
+				>
 			</div>
 
 			<div class="body">
@@ -84,8 +91,8 @@
 		background-color: scheme.var-color('background');
 		border: 1px solid scheme.var-color('primary');
 		box-shadow: 0 8px 32px #000a;
-		min-width: 400px;
-		width: 40vw;
+		min-width: 40vw;
+		width: 640px;
 		max-width: calc(100vw - 32px);
 
 		> div {
