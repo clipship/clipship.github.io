@@ -10,9 +10,10 @@
 
 		title: string;
 		children: Snippet;
+		actions?: Snippet;
 	}
 
-	let { visible = $bindable(), title, children }: Props = $props();
+	let { visible = $bindable(), title, children, actions }: Props = $props();
 
 	function close() {
 		visible = false;
@@ -34,9 +35,16 @@
 
 				<IconButton icon={XIcon} onclick={close}>Close</IconButton>
 			</div>
+
 			<div class="body">
 				{@render children()}
 			</div>
+
+			{#if actions}
+				<div class="actions">
+					{@render actions()}
+				</div>
+			{/if}
 		</div>
 	</div>
 </Modal>
@@ -59,7 +67,7 @@
 
 		.dialog {
 			transform: translateY(20px);
-			transition: transform 0.5s;
+			transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 		}
 
 		&.visible {
@@ -75,10 +83,13 @@
 	.dialog {
 		background-color: scheme.var-color('background');
 		border: 1px solid scheme.var-color('primary');
+		box-shadow: 0 8px 32px #000a;
 		min-width: 400px;
+		width: 40vw;
+		max-width: calc(100vw - 32px);
 
 		> div {
-			padding: 16px 32px;
+			padding: 16px 24px;
 		}
 	}
 
@@ -92,5 +103,17 @@
 	h1 {
 		margin: 0;
 		font-size: 1.5em;
+	}
+
+	div.body {
+		padding: 32px 48px;
+	}
+
+	div.actions {
+		display: flex;
+		align-items: center;
+		justify-content: end;
+		padding-top: 0;
+		padding-bottom: 24px;
 	}
 </style>

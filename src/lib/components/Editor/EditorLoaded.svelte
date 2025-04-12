@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
 	import { untrack } from 'svelte';
 	import Audio from './Audio.svelte';
 	import ControlArea from './ControlArea.svelte';
+	import ExportDialog from './ExportDialog.svelte';
 	import type { RangeInterval } from './TimelineArea/interval-space';
 	import type { TrackState } from './TimelineArea/TimelineArea.svelte';
 	import TimelineArea from './TimelineArea/TimelineArea.svelte';
@@ -80,32 +80,11 @@
 		file = newFile;
 	}
 
-	const { ffmpeg } = useFFmpeg();
+	let isExportDialogVisible = $state(false);
 
-	async function exportClip() {
-		const isTrimmingActive = markingRange.start > 0 || markingRange.end < 1;
-
-		const doPreciseTrimming = true;
-
-		const { outputFileInFFmpeg } = await $ffmpeg!.convert(file, {
-			includeVideo: false,
-			audio: {
-				streamIds: [],
-				singleOutputStream: true
-			},
-			trimming: isTrimmingActive
-				? {
-						highPrecision: doPreciseTrimming,
-						start: markingRange.start * videoDuration,
-						end: markingRange.end * videoDuration
-					}
-				: undefined
-		});
-
-		console.log('done');
-
-		const probeResult = await $ffmpeg!.probe(outputFileInFFmpeg);
-		console.log(probeResult);
+	function exportClip() {
+		paused = true;
+		isExportDialogVisible = true;
 	}
 
 	function handleKeyDown(ev: KeyboardEvent) {
@@ -157,6 +136,8 @@
 		/>
 	{/if}
 </div>
+
+<ExportDialog bind:visible={isExportDialogVisible} {file} {tracks} {markingRange} {videoDuration} />
 
 {#each tracks as track}
 	{#if track.wavBuffer}
