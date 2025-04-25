@@ -28,6 +28,10 @@
 
 		color: scheme.var-color('neutral', 1);
 
+		&:has(:focus-visible) {
+			@include components.area(#aaa3);
+		}
+
 		&:has(:checked) {
 			color: scheme.var-color('primary');
 

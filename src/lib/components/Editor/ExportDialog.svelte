@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
 	import Checkbox from '../Checkbox.svelte';
+	import Dropdown from '../Dropdown.svelte';
 	import ElevatedButton from '../ElevatedButton.svelte';
 	import Dialog from '../Overlay/Dialog.svelte';
 	import Setting from '../Setting.svelte';
+	import { Formats, type ValidFormat } from './formats';
 	import { editorPreferences } from './preferences.svelte';
 	import Duration from './TimelineArea/Duration.svelte';
 	import type { RangeInterval } from './TimelineArea/interval-space';
@@ -23,6 +25,8 @@
 	const { ffmpeg } = useFFmpeg();
 
 	let isTrimmingActive = $derived(markingRange.start > 0 || markingRange.end < 1);
+
+	let outputFormatName = $state<ValidFormat>('mp4');
 
 	async function exportClip() {
 		const doPreciseTrimming = true;
@@ -57,7 +61,7 @@
 		<div class="info">
 			Export a <em><Duration seconds={clipDuration} /></em> long clip of your video with
 			<em>
-				<!-- Replace with actual i18n. -->
+				<!-- TODO: Replace with actual i18n -->
 				{#if activeTracks.length === 1}
 					1 audio track
 				{:else}
@@ -80,7 +84,7 @@
 			Select the output format.
 
 			{#snippet trailing()}
-				Opus
+				<Dropdown options={Object.keys(Formats)} bind:value={outputFormatName} />
 			{/snippet}
 		</Setting>
 	</div>
