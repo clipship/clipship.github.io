@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Anchor from '$lib/components/Overlay/Anchor.svelte';
+	import Tooltip from '$lib/components/Overlay/Tooltip.svelte';
 	import InteractiveTimelineBar, { timelineA11y } from './InteractiveTimelineBar.svelte';
 	import {
 		constrainRangeInterval,
@@ -94,7 +94,7 @@
 		{#if isTrimmingActive}
 			{@const start = markingRangeInView.start}
 			{@const end = markingRangeInView.end}
-			<Anchor keepVisible={dragging === 'start'}>
+			<Tooltip keepVisible={dragging === 'start'}>
 				<div
 					class="handle start"
 					class:dragging={dragging === 'start'}
@@ -109,14 +109,14 @@
 				{#snippet tooltip()}
 					<Timecode seconds={markingRange.start * duration} />
 				{/snippet}
-			</Anchor>
+			</Tooltip>
 
 			<div
 				class="clip"
 				style="--start: {start * clientWidth}px; --end: {end * clientWidth}px;"
 			></div>
 
-			<Anchor keepVisible={dragging === 'end'}>
+			<Tooltip keepVisible={dragging === 'end'}>
 				<div
 					class="handle end"
 					class:dragging={dragging === 'end'}
@@ -131,7 +131,7 @@
 				{#snippet tooltip()}
 					<Timecode seconds={markingRange.end * duration} />
 				{/snippet}
-			</Anchor>
+			</Tooltip>
 		{/if}
 	{/snippet}
 </InteractiveTimelineBar>

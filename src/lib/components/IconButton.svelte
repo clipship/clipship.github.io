@@ -2,7 +2,7 @@
 	import type { Icon as IconType } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
-	import Anchor from './Overlay/Anchor.svelte';
+	import Tooltip from './Overlay/Tooltip.svelte';
 
 	export type Color = 'primary' | 'secondary' | 'neutral';
 	export type Variant = 'filled' | 'outlined' | 'flat';
@@ -38,7 +38,7 @@
 	}
 </script>
 
-<Anchor>
+<Tooltip>
 	<button
 		{...buttonProps}
 		data-variant={variant}
@@ -54,7 +54,7 @@
 	{#snippet tooltip()}
 		{@render children()}
 	{/snippet}
-</Anchor>
+</Tooltip>
 
 <style lang="scss">
 	@use '$lib/style/components';

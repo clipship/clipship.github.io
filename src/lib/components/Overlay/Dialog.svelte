@@ -2,8 +2,8 @@
 	import XIcon from '@lucide/svelte/icons/x';
 
 	import type { Snippet } from 'svelte';
+	import { Portal } from 'svelte-tether';
 	import IconButton from '../IconButton.svelte';
-	import Modal from './Modal.svelte';
 
 	interface Props {
 		visible: boolean;
@@ -27,9 +27,9 @@
 	let headerId = $state(crypto.randomUUID());
 </script>
 
-<Modal {visible}>
+<Portal modal={visible}>
 	<div class="backdrop" class:visible aria-hidden={!visible}>
-		<div class="dialog" role="dialog" aria-modal="true" aria-labelledby={headerId}>
+		<div role="dialog" aria-modal="true" aria-labelledby={headerId}>
 			<div class="header">
 				<h1 id={headerId}>{title}</h1>
 
@@ -54,7 +54,7 @@
 			{/if}
 		</div>
 	</div>
-</Modal>
+</Portal>
 
 <style lang="scss">
 	@use '$lib/style/scheme';
@@ -72,7 +72,7 @@
 		pointer-events: none;
 		transition: opacity 0.5s;
 
-		.dialog {
+		[role='dialog'] {
 			transform: translateY(20px);
 			transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 		}
@@ -81,13 +81,13 @@
 			opacity: 1;
 			pointer-events: all;
 
-			.dialog {
+			[role='dialog'] {
 				transform: translateY(0px);
 			}
 		}
 	}
 
-	.dialog {
+	[role='dialog'] {
 		background-color: scheme.var-color('background');
 		border: 1px solid scheme.var-color('primary');
 		box-shadow: 0 8px 32px #000a;

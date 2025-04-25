@@ -1,25 +1,67 @@
 <script lang="ts">
 	import { type Snippet } from 'svelte';
+	import { Tether, type Alignment } from 'svelte-tether';
 
 	interface Props {
-		visible: boolean;
+		keepVisible?: boolean;
+		alignment?: Alignment;
 		children: Snippet;
+		tooltip: Snippet;
 	}
 
-	let { visible, children }: Props = $props();
+	let { keepVisible = false, alignment = 'top-center', children, tooltip }: Props = $props();
+
+	let wrappedElement = $state<HTMLElement>();
+	let tooltipId = $props.id();
+
+	// This adds an identifying attribute to the "wrappedElement".
+	// You can think of this as a Svelte use:action acting on the element.
+	$effect(() => {
+		const currentWrappedElement = wrappedElement;
+
+		if (currentWrappedElement) {
+			currentWrappedElement.setAttribute('aria-labelledby', tooltipId);
+
+			return () => {
+				currentWrappedElement.removeAttribute('aria-labelledby');
+			};
+		}
+	});
 </script>
 
-<div aria-hidden="true" class:visible>
+<Tether origin={alignment} bind:wrappedElement>
 	{@render children()}
-</div>
+
+	{#snippet portal()}
+		<div aria-hidden="true" role="tooltip" id={tooltipId} class:show={keepVisible}>
+			{@render tooltip()}
+		</div>
+	{/snippet}
+</Tether>
+
+<!--
+    The CSS selector here selects the tooltip element, if the wrapped element
+    with the "aria-labelledby" attribute is currently hovered or focused.
+-->
+<svelte:head>
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	{@html `<style>
+        #${tooltipId}.show, body:has(
+            [aria-labelledby='${tooltipId}']:hover,
+            [aria-labelledby='${tooltipId}']:focus-visible
+        ) #${tooltipId} {
+            opacity: 1;
+            margin: 6px;
+        }
+    </style>`}
+</svelte:head>
 
 <style lang="scss">
 	@use '$lib/style/scheme';
 
-	div {
-		margin: 6px;
+	[role='tooltip'] {
+		margin: 2px;
 		opacity: 0;
-		translate: 0 4px;
 		transition: 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
 
 		background-color: scheme.var-color('neutral');
@@ -32,10 +74,5 @@
 		max-width: 200px;
 
 		box-shadow: 0 2px 6px #000a;
-
-		&.visible {
-			opacity: 1;
-			translate: 0 0;
-		}
 	}
 </style>

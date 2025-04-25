@@ -1,18 +1,28 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte';
-	import Overlay from '$lib/components/Overlay/Overlay.svelte';
 	import '$lib/style/global.scss';
 	import '@fontsource-variable/montserrat';
 	import '@fontsource/arvo';
 	import type { Snippet } from 'svelte';
+	import { PortalOverlay } from 'svelte-tether';
 
-	let { children }: { children: Snippet } = $props();
+	let { children: layoutChildren }: { children: Snippet } = $props();
 </script>
 
-<Overlay>
-	<Header />
+<PortalOverlay>
+	{#snippet children({ hasModals })}
+		<div inert={hasModals}>
+			<Header />
 
-	{@render children()}
+			{@render layoutChildren()}
 
-	<!-- <Footer /> -->
-</Overlay>
+			<!-- <Footer /> -->
+		</div>
+	{/snippet}
+</PortalOverlay>
+
+<style lang="scss">
+	div {
+		display: contents;
+	}
+</style>
