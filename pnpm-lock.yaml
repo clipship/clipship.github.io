@@ -24,7 +24,7 @@ importers:
         specifier: ^0.485.0
         version: 0.485.0(svelte@5.23.2)
       svelte-tether:
-        specifier: ^0.1.0
+        specifier: ^0.1.1
         version: 0.1.1(svelte@5.23.2)
     devDependencies:
       '@eslint/compat':
