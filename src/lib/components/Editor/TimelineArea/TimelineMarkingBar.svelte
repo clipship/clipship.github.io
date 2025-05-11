@@ -106,7 +106,7 @@
 					})}
 				></div>
 
-				{#snippet tooltip()}
+				{#snippet title()}
 					<Timecode seconds={markingRange.start * duration} />
 				{/snippet}
 			</Tooltip>
@@ -128,7 +128,7 @@
 					})}
 				></div>
 
-				{#snippet tooltip()}
+				{#snippet title()}
 					<Timecode seconds={markingRange.end * duration} />
 				{/snippet}
 			</Tooltip>

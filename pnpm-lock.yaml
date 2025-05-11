@@ -24,8 +24,8 @@ importers:
         specifier: ^0.485.0
         version: 0.485.0(svelte@5.23.2)
       svelte-tether:
-        specifier: ^0.1.1
-        version: 0.1.1(svelte@5.23.2)
+        specifier: ^0.2.0
+        version: 0.2.0(svelte@5.23.2)
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -1849,8 +1849,8 @@ packages:
       svelte:
         optional: true
 
-  svelte-tether@0.1.1:
-    resolution: {integrity: sha512-u/uY//DQMVAz0ZRepAhJU4a+fSA2jmB3iEleOq/N8Z6tM2lqv6nVDYESYjehZvP2PRlTUGptel0rxwPThSkmgg==}
+  svelte-tether@0.2.0:
+    resolution: {integrity: sha512-Ec33JwXTb/8pA/9Kx5BLaljVz6AK5037hhokQYUjuTqNCcHduvUD2QlwZDVQHL3eZaG7lQm3Eqc4Gjpf9AO/4A==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -3759,7 +3759,7 @@ snapshots:
     optionalDependencies:
       svelte: 5.23.2
 
-  svelte-tether@0.1.1(svelte@5.23.2):
+  svelte-tether@0.2.0(svelte@5.23.2):
     dependencies:
       svelte: 5.23.2
 

@@ -51,7 +51,7 @@
 		<Icon fill={stroke ? 'transparent' : 'currentColor'} aria-hidden />
 	</button>
 
-	{#snippet tooltip()}
+	{#snippet title()}
 		{@render children()}
 	{/snippet}
 </Tooltip>
