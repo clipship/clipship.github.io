@@ -1,17 +1,19 @@
 interface Format {
-	hasVideo: boolean;
 	supportsMultipleAudioStreams: boolean;
 }
 
-export const Formats = {
+export const VideoFormats = {
 	mp4: {
-		hasVideo: true,
-		supportsMultipleAudioStreams: true
-	},
-	opus: {
-		hasVideo: false,
 		supportsMultipleAudioStreams: true
 	}
 } satisfies Record<string, Format>;
 
-export type ValidFormat = keyof typeof Formats;
+export const AudioFormats = {
+	opus: {
+		supportsMultipleAudioStreams: true
+	}
+} satisfies Record<string, Format>;
+
+export type ValidVideoFormat = keyof typeof VideoFormats;
+export type ValidAudioFormat = keyof typeof AudioFormats;
+export type ValidFormat = ValidVideoFormat | ValidAudioFormat;

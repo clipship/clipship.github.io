@@ -1,15 +1,18 @@
 <script lang="ts">
 	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
+	import TextButton from '../BarButton.svelte';
 	import Checkbox from '../Checkbox.svelte';
 	import Dropdown from '../Dropdown.svelte';
 	import ElevatedButton from '../ElevatedButton.svelte';
 	import Dialog from '../Overlay/Dialog.svelte';
 	import Setting from '../Setting.svelte';
-	import { Formats, type ValidFormat } from './formats';
-	import { editorPreferences } from './preferences.svelte';
+	import { AudioFormats, VideoFormats } from './formats';
+	import { editorPreferences, type VideoExportMode } from './preferences.svelte';
 	import Duration from './TimelineArea/Duration.svelte';
 	import type { RangeInterval } from './TimelineArea/interval-space';
 	import type { TrackState } from './TimelineArea/TimelineArea.svelte';
+
+	const VIDEO_EXPORT_MODES: VideoExportMode[] = ['fast', 're-encode'];
 
 	interface Props {
 		visible: boolean;
@@ -22,24 +25,26 @@
 
 	let { visible = $bindable(), file, tracks, markingRange, videoDuration }: Props = $props();
 
+	let isTrimmingActive = $derived(markingRange.start > 0 || markingRange.end < 1);
+	let clipDuration = $derived((markingRange.end - markingRange.start) * videoDuration);
+	let activeTracks = $derived(tracks.filter((track) => track.isUsed));
+
+	const settings = editorPreferences.export;
+
 	const { ffmpeg } = useFFmpeg();
 
-	let isTrimmingActive = $derived(markingRange.start > 0 || markingRange.end < 1);
-
-	let outputFormatName = $state<ValidFormat>('mp4');
-
 	async function exportClip() {
-		const doPreciseTrimming = true;
-
 		const { outputFileInFFmpeg } = await $ffmpeg!.convert(file, {
-			includeVideo: false,
+			mode: settings.includeVideo
+				? { outputFormat: settings.videoFormat, includeVideo: true }
+				: { outputFormat: settings.audioFormat, includeVideo: false },
 			audio: {
-				streamIds: [],
-				singleOutputStream: true
+				streamIds: activeTracks.map((_, id) => id),
+				singleOutputStream: settings.singleAudioOutputStream
 			},
 			trimming: isTrimmingActive
 				? {
-						highPrecision: doPreciseTrimming,
+						highPrecision: settings.videoExportMode === 're-encode',
 						start: markingRange.start * videoDuration,
 						end: markingRange.end * videoDuration
 					}
@@ -51,9 +56,6 @@
 		const probeResult = await $ffmpeg!.probe(outputFileInFFmpeg);
 		console.log(probeResult);
 	}
-
-	let clipDuration = $derived((markingRange.end - markingRange.start) * videoDuration);
-	let activeTracks = $derived(tracks.filter((track) => track.isUsed));
 </script>
 
 <Dialog bind:visible title="Export">
@@ -70,23 +72,50 @@
 			</em>.
 		</div>
 
+		<div class="button-bar">
+			<TextButton onclick={() => (settings.includeVideo = false)} active={!settings.includeVideo}
+				>Audio</TextButton
+			>
+			<TextButton onclick={() => (settings.includeVideo = true)} active={settings.includeVideo}
+				>Video</TextButton
+			>
+		</div>
+
+		{#if !settings.includeVideo}
+			<Setting headline="Format">
+				Select the output format.
+
+				{#snippet trailing()}
+					<Dropdown options={Object.keys(AudioFormats)} bind:value={settings.audioFormat} />
+				{/snippet}
+			</Setting>
+		{:else}
+			<Setting headline="Video Export Mode">
+				Select the processing method.
+
+				{#snippet trailing()}
+					<Dropdown options={VIDEO_EXPORT_MODES} bind:value={settings.videoExportMode} />
+				{/snippet}
+			</Setting>
+
+			<Setting headline="Format" disabled={settings.videoExportMode !== 're-encode'}>
+				Select the output format.
+
+				{#snippet trailing()}
+					<Dropdown options={Object.keys(VideoFormats)} bind:value={settings.videoFormat} />
+				{/snippet}
+			</Setting>
+		{/if}
+
 		{#if activeTracks.length >= 2}
 			<Setting headline="Single Audio Track">
 				If enabled, the {activeTracks.length} audio tracks will be mixed into one.
 
 				{#snippet trailing()}
-					<Checkbox bind:checked={editorPreferences.export.singleAudioOutputStream} />
+					<Checkbox bind:checked={settings.singleAudioOutputStream} />
 				{/snippet}
 			</Setting>
 		{/if}
-
-		<Setting headline="Format">
-			Select the output format.
-
-			{#snippet trailing()}
-				<Dropdown options={Object.keys(Formats)} bind:value={outputFormatName} />
-			{/snippet}
-		</Setting>
 	</div>
 
 	{#snippet actions()}
@@ -99,5 +128,13 @@
 		display: flex;
 		flex-direction: column;
 		gap: 32px;
+	}
+
+	.button-bar {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 16px;
+		padding: 0 64px;
+		align-items: stretch;
 	}
 </style>

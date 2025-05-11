@@ -63,12 +63,7 @@
 	{/snippet}
 
 	{#snippet portal({ isMirroredVertically })}
-		<ul
-			class:wrap-to-top={isMirroredVertically}
-			aria-hidden={!expanded}
-			role="listbox"
-			id={popupId}
-		>
+		<ul class:wrap-to-top={isMirroredVertically} inert={!expanded} role="listbox" id={popupId}>
 			{#each options as option (option)}
 				<li
 					role="option"
@@ -99,7 +94,7 @@
 		color: inherit;
 		cursor: pointer;
 		background: none;
-		min-width: 120px;
+		min-width: 160px;
 
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -150,7 +145,7 @@
 
 		transition: 0.1s;
 
-		&[aria-hidden='true'] {
+		&[inert] {
 			pointer-events: none;
 			opacity: 0;
 		}

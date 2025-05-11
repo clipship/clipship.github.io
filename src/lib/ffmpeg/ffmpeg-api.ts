@@ -1,5 +1,10 @@
 import { FFmpeg, type FFFSType, type LogEvent } from '@ffmpeg/ffmpeg';
 
+import type {
+	ValidAudioFormat,
+	ValidFormat,
+	ValidVideoFormat
+} from '$lib/components/Editor/formats';
 import urlFFmpegCoreWasm from '@ffmpeg/core/wasm?url';
 import urlFFmpegCore from '@ffmpeg/core?url';
 
@@ -132,15 +137,18 @@ export class FFmpegApi {
 	}
 
 	async convert(file: File, options: ConvertOptions): Promise<ConversionResult> {
-		const { includeVideo, audio, trimming } = options;
+		const { mode, audio, trimming } = options;
 
-		let videoFileExtension = 'mp4';
-		if (file.name.includes('.')) {
-			videoFileExtension = file.name.slice(file.name.lastIndexOf('.') + 1);
-		}
+		const includeVideo = mode.includeVideo;
 
-		const fileExtension = includeVideo ? videoFileExtension : 'opus';
-		const outputFile = `${file.name}-trim.${fileExtension}`;
+		const fileExtensionStart = file.name.lastIndexOf('.');
+		const videoFileExtension =
+			fileExtensionStart > 0 ? file.name.slice(fileExtensionStart + 1) : undefined;
+		const fileNameWithoutExtension =
+			fileExtensionStart > 0 ? file.name.slice(0, fileExtensionStart) : file.name;
+
+		const fileExtension = includeVideo ? videoFileExtension : mode.outputFormat;
+		const outputFile = `${fileNameWithoutExtension}-trim.${fileExtension}`;
 
 		const reencode = trimming?.highPrecision ?? false;
 
@@ -172,14 +180,8 @@ export class FFmpegApi {
 				// Avoid re-encoding to drastically speed up the process
 				...(!reencode ? ['-c:v', 'copy'] : []),
 
-				// Opus codec settings for audio-only output
-				...(!includeVideo
-					? [
-							...['-c:a', 'libopus'],
-
-							// Use small frames to achieve high precision output duration
-							...(trimming ? ['-frame_duration', '2.5'] : [])
-						]
+				...(!mode.includeVideo
+					? this.getFFmpegCodecOptionsForFormat(mode.outputFormat, options)
 					: []),
 
 				outputFile
@@ -193,6 +195,20 @@ export class FFmpegApi {
 			outputFileInFFmpeg: outputFile,
 			outputBuffer: outputFileBuffer as ArrayBuffer
 		};
+	}
+
+	private getFFmpegCodecOptionsForFormat(format: ValidFormat, options: ConvertOptions): string[] {
+		switch (format) {
+			case 'opus':
+				return [
+					...['-c:a', 'libopus'],
+
+					// Use small frames to achieve high precision output duration
+					...(options.trimming ? ['-frame_duration', '2.5'] : [])
+				];
+			default:
+				return [];
+		}
 	}
 }
 
@@ -222,8 +238,19 @@ export interface FFprobeOutput {
 	};
 }
 
+export type ConversionMode =
+	| {
+			includeVideo: true;
+			outputFormat?: ValidVideoFormat;
+	  }
+	| {
+			includeVideo: false;
+			outputFormat: ValidAudioFormat;
+	  };
+
 interface ConvertOptions {
-	includeVideo: boolean;
+	mode: ConversionMode;
+
 	audio: {
 		streamIds: number[];
 		singleOutputStream: boolean;
