@@ -3,10 +3,13 @@
 
 body {
 	margin: 0;
-	min-height: 100vh;
+	overflow-x: hidden;
+}
+
+.boundary {
 	display: flex;
 	flex-direction: column;
-	overflow-x: hidden;
+	min-height: 100vh;
 }
 
 * {

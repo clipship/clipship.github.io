@@ -31,19 +31,19 @@
 	@use '$lib/style/scheme';
 
 	[role='tooltip'] {
-		background-color: scheme.var-color('neutral');
+		background-color: scheme.var-color('neutral', -1);
 		border: none;
-		border-radius: 8px;
-		padding: 10px 16px;
-		font-size: 0.8rem;
+		border-radius: 4px;
+		padding: 8px 12px;
+		font-size: 0.85rem;
 		text-align: center;
 		width: max-content;
 		max-width: 200px;
 		box-shadow: 0 2px 6px #000a;
 
-		transition: 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+		transition: 0.15s cubic-bezier(0.165, 0.84, 0.44, 1);
 		opacity: 0;
-		margin: 2px;
+		margin: 0 6px;
 
 		&.show {
 			opacity: 1;

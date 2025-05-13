@@ -4,25 +4,19 @@
 	import '@fontsource-variable/montserrat';
 	import '@fontsource/arvo';
 	import type { Snippet } from 'svelte';
-	import { PortalOverlay } from 'svelte-tether';
+	import { PortalOverlay, TetherBoundary } from 'svelte-tether';
 
 	let { children: layoutChildren }: { children: Snippet } = $props();
 </script>
 
 <PortalOverlay>
 	{#snippet children({ hasModals })}
-		<div inert={hasModals}>
+		<TetherBoundary attributes={{ class: 'boundary', inert: hasModals }}>
 			<Header />
 
 			{@render layoutChildren()}
 
 			<!-- <Footer /> -->
-		</div>
+		</TetherBoundary>
 	{/snippet}
 </PortalOverlay>
-
-<style lang="scss">
-	div {
-		display: contents;
-	}
-</style>

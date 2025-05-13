@@ -14,5 +14,6 @@
 		display: grid;
 		flex: 1;
 		margin: 16px;
+		margin-top: 0;
 	}
 </style>

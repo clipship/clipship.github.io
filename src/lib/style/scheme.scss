@@ -19,15 +19,15 @@
 }
 
 $primary: #ff4b33;
-$secondary: #9e75ff;
-$neutral: #48415f;
+$secondary: #7758ff;
+$neutral: #464352;
 
 :root {
 	@include color('primary', $primary);
 	@include color('secondary', $secondary);
 	@include color('neutral', $neutral);
 
-	#{color-key('background')}: #16141b;
+	#{color-key('background')}: #0e0e0e;
 	#{color-key('text')}: white;
 	#{color-key('text-dark')}: var-color('background');
 
