@@ -139,7 +139,7 @@
 
 <ExportDialog bind:visible={isExportDialogVisible} {file} {tracks} {markingRange} {videoDuration} />
 
-{#each tracks as track}
+{#each tracks as track, index (index)}
 	{#if track.wavBuffer}
 		<Audio
 			wavBuffer={track.wavBuffer}

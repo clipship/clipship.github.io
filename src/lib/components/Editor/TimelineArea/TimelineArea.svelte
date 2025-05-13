@@ -127,13 +127,9 @@
 
 	<div class="timeline-area">
 		<div class="channels">
-			{#each tracks as track, i}
+			{#each tracks as track, index (index)}
 				<div class="track">
-					<TrackChannel
-						bind:isUsed={track.isUsed}
-						audioBuffer={track.wavBuffer}
-						name={'Track ' + (i + 1)}
-					/>
+					<TrackChannel bind:isUsed={track.isUsed} name={'Track ' + (index + 1)} />
 				</div>
 			{/each}
 		</div>
@@ -153,7 +149,7 @@
 				{markingRange}
 			/>
 
-			{#each tracks as track}
+			{#each tracks as track, index (index)}
 				<div class="track">
 					<TrackTimeline range={transformAsRange.current} wavBuffer={track.wavBuffer} />
 				</div>

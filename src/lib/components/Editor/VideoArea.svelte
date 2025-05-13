@@ -20,7 +20,6 @@
 </script>
 
 <div>
-	<!-- svelte-ignore a11y_media_has_caption -->
 	<video
 		src={fileBlobUrl}
 		muted

@@ -2,20 +2,13 @@
 	export interface TrackChannelProps {
 		name: string;
 		isUsed: boolean;
-		audioBuffer?: ArrayBuffer;
 	}
 
-	let { name, isUsed = $bindable(), audioBuffer }: TrackChannelProps = $props();
-
-	let blobUrl = $derived(audioBuffer ? URL.createObjectURL(new Blob([audioBuffer])) : undefined);
+	let { name, isUsed = $bindable() }: TrackChannelProps = $props();
 </script>
 
 <div>
 	<span>{name}</span>
-
-	<!-- {#if blobUrl}
-		<audio src={blobUrl} controls></audio>
-	{/if} -->
 
 	<input type="checkbox" bind:checked={isUsed} />
 </div>
