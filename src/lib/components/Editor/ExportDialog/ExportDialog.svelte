@@ -82,7 +82,7 @@
 	}
 </script>
 
-<Dialog bind:visible title="Export">
+<Dialog bind:visible title="Export" disableCloseButton={phase.type === 'exporting'}>
 	{#if phase.type === 'configuring'}
 		<ContentSettings clipDurationInSeconds={clipDuration} trackCount={activeTracks.length} />
 	{:else if phase.type === 'exporting'}

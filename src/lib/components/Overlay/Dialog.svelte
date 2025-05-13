@@ -7,13 +7,20 @@
 
 	interface Props {
 		visible: boolean;
+		disableCloseButton?: boolean;
 
 		title: string;
 		children: Snippet;
 		actions?: Snippet;
 	}
 
-	let { visible = $bindable(), title, children, actions }: Props = $props();
+	let {
+		visible = $bindable(),
+		disableCloseButton = false,
+		title,
+		children,
+		actions
+	}: Props = $props();
 
 	function close() {
 		visible = false;
@@ -33,14 +40,11 @@
 			<div class="header">
 				<h1 id={headerId}>{title}</h1>
 
-				<IconButton
-					icon={XIcon}
-					onclick={close}
-					variant="flat"
-					buttonProps={{
-						tabindex: 0
-					}}>Close</IconButton
-				>
+				{#if !disableCloseButton}
+					<IconButton icon={XIcon} onclick={close} variant="flat" buttonProps={{ tabindex: 0 }}>
+						Close
+					</IconButton>
+				{/if}
 			</div>
 
 			<div class="body">

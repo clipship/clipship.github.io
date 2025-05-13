@@ -36,4 +36,8 @@
 		flex-direction: column;
 		align-items: center;
 	}
+
+	video {
+		max-width: 100%;
+	}
 </style>
