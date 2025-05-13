@@ -14,6 +14,10 @@ export const AudioFormats = {
 	opus: {
 		mimeType: 'audio/opus',
 		supportsMultipleAudioStreams: true
+	},
+	mp3: {
+		mimeType: 'audio/mp3',
+		supportsMultipleAudioStreams: false
 	}
 } satisfies Record<string, Format>;
 

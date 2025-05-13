@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
+	import { untrack } from 'svelte';
 	import ElevatedButton from '../../ElevatedButton.svelte';
 	import Dialog from '../../Overlay/Dialog.svelte';
 	import { AllFormats } from '../formats';
@@ -34,12 +35,15 @@
 
 	const settings = editorPreferences.export;
 
+	const outputFormatName = $derived(
+		settings.includeVideo ? settings.videoFormat : settings.audioFormat
+	);
+	const outputFormat = $derived(AllFormats[outputFormatName]);
+
 	const { ffmpeg } = useFFmpeg();
 
 	async function exportClip() {
 		phase = { type: 'exporting' };
-
-		const outputFormat = settings.includeVideo ? settings.videoFormat : settings.audioFormat;
 
 		try {
 			const { outputFileInFFmpeg, outputBuffer } = await $ffmpeg!.convert(file, {
@@ -48,7 +52,8 @@
 					: { outputFormat: settings.audioFormat, includeVideo: false },
 				audio: {
 					streamIds: activeTracks.map((_, id) => id),
-					singleOutputStream: settings.singleAudioOutputStream
+					singleOutputStream:
+						!outputFormat.supportsMultipleAudioStreams || settings.singleAudioOutputStream
 				},
 				trimming: isTrimmingActive
 					? {
@@ -61,16 +66,14 @@
 
 			const probeResult = await $ffmpeg!.probe(outputFileInFFmpeg);
 
-			const mimeType = AllFormats[outputFormat].mimeType;
-
-			const blob = new Blob([outputBuffer], { type: mimeType });
+			const blob = new Blob([outputBuffer], { type: outputFormat.mimeType });
 			const blobUrl = URL.createObjectURL(blob);
 
 			phase = {
 				type: 'success',
 				result: {
 					outputBlobUrl: blobUrl,
-					outputFormat: outputFormat,
+					outputFormat: outputFormatName,
 					outputFileName: outputFileInFFmpeg,
 					metadata: probeResult
 				}
@@ -80,11 +83,29 @@
 			throw err;
 		}
 	}
+
+	$effect(() => {
+		if (!visible) {
+			const currentPhase = untrack(() => phase);
+
+			if (currentPhase.type === 'success') {
+				URL.revokeObjectURL(currentPhase.result.outputBlobUrl);
+			}
+
+			setTimeout(() => {
+				phase = { type: 'configuring' };
+			}, 600);
+		}
+	});
 </script>
 
 <Dialog bind:visible title="Export" disableCloseButton={phase.type === 'exporting'}>
 	{#if phase.type === 'configuring'}
-		<ContentSettings clipDurationInSeconds={clipDuration} trackCount={activeTracks.length} />
+		<ContentSettings
+			clipDurationInSeconds={clipDuration}
+			trackCount={activeTracks.length}
+			supportsMultipleAudioStreams={outputFormat.supportsMultipleAudioStreams}
+		/>
 	{:else if phase.type === 'exporting'}
 		<ContentProgress progress={0} />
 	{:else}

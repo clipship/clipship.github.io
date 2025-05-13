@@ -12,9 +12,10 @@
 	interface Props {
 		trackCount: number;
 		clipDurationInSeconds: number;
+		supportsMultipleAudioStreams: boolean;
 	}
 
-	let { trackCount, clipDurationInSeconds }: Props = $props();
+	let { trackCount, clipDurationInSeconds, supportsMultipleAudioStreams }: Props = $props();
 
 	const settings = editorPreferences.export;
 </script>
@@ -68,11 +69,19 @@
 	{/if}
 
 	{#if trackCount >= 2}
-		<Setting headline="Single Audio Track">
-			If enabled, the {trackCount} audio tracks will be mixed into one.
+		<Setting headline="Single Audio Track" disabled={!supportsMultipleAudioStreams}>
+			{#if supportsMultipleAudioStreams}
+				If enabled, the {trackCount} audio tracks will be mixed into one.
+			{:else}
+				The selected format <b>only supports</b> a single audio track.
+			{/if}
 
 			{#snippet trailing()}
-				<Checkbox bind:checked={settings.singleAudioOutputStream} />
+				{#if supportsMultipleAudioStreams}
+					<Checkbox bind:checked={settings.singleAudioOutputStream} />
+				{:else}
+					<Checkbox checked={true} />
+				{/if}
 			{/snippet}
 		</Setting>
 	{/if}
