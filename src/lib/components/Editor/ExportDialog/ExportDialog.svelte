@@ -2,13 +2,18 @@
 	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
 	import ElevatedButton from '../../ElevatedButton.svelte';
 	import Dialog from '../../Overlay/Dialog.svelte';
+	import { AllFormats } from '../formats';
 	import { editorPreferences } from '../preferences.svelte';
 	import type { RangeInterval } from '../TimelineArea/interval-space';
 	import type { TrackState } from '../TimelineArea/TimelineArea.svelte';
+	import ContentSettings from './ContentConfigure.svelte';
 	import ContentProgress from './ContentProgress.svelte';
-	import ContentSettings from './ContentSettings.svelte';
+	import ContentSuccess, { type ExportSuccess } from './ContentSuccess.svelte';
 
-	type Phase = 'configuring' | 'exporting' | 'done';
+	type Phase =
+		| { type: 'configuring' }
+		| { type: 'exporting' }
+		| { type: 'success'; result: ExportSuccess };
 
 	interface Props {
 		visible: boolean;
@@ -25,17 +30,19 @@
 	let clipDuration = $derived((markingRange.end - markingRange.start) * videoDuration);
 	let activeTracks = $derived(tracks.filter((track) => track.isUsed));
 
-	let phase = $state<Phase>('configuring');
+	let phase = $state<Phase>({ type: 'configuring' });
 
 	const settings = editorPreferences.export;
 
 	const { ffmpeg } = useFFmpeg();
 
 	async function exportClip() {
-		phase = 'exporting';
+		phase = { type: 'exporting' };
+
+		const outputFormat = settings.includeVideo ? settings.videoFormat : settings.audioFormat;
 
 		try {
-			const { outputFileInFFmpeg } = await $ffmpeg!.convert(file, {
+			const { outputFileInFFmpeg, outputBuffer } = await $ffmpeg!.convert(file, {
 				mode: settings.includeVideo
 					? { outputFormat: settings.videoFormat, includeVideo: true }
 					: { outputFormat: settings.audioFormat, includeVideo: false },
@@ -52,29 +59,45 @@
 					: undefined
 			});
 
-			phase = 'done';
-
-			console.log('done');
-
 			const probeResult = await $ffmpeg!.probe(outputFileInFFmpeg);
-			console.log(probeResult);
+
+			const mimeType = AllFormats[outputFormat].mimeType;
+
+			const blob = new Blob([outputBuffer], { type: mimeType });
+			const blobUrl = URL.createObjectURL(blob);
+
+			phase = {
+				type: 'success',
+				result: {
+					outputBlobUrl: blobUrl,
+					outputFormat: outputFormat,
+					outputFileName: outputFileInFFmpeg,
+					metadata: probeResult
+				}
+			};
 		} catch (err) {
-			phase = 'configuring';
+			phase = { type: 'configuring' };
 			throw err;
 		}
 	}
 </script>
 
 <Dialog bind:visible title="Export">
-	{#if phase === 'configuring'}
+	{#if phase.type === 'configuring'}
 		<ContentSettings clipDurationInSeconds={clipDuration} trackCount={activeTracks.length} />
-	{:else if phase === 'exporting'}
+	{:else if phase.type === 'exporting'}
 		<ContentProgress progress={0} />
+	{:else}
+		<ContentSuccess {...phase.result} />
 	{/if}
 
 	{#snippet actions()}
-		{#if !phase}
+		{#if phase.type === 'configuring'}
 			<ElevatedButton color="secondary" onclick={exportClip}>Export</ElevatedButton>
+		{:else if phase.type === 'success'}
+			<a href={phase.result.outputBlobUrl} download={phase.result.outputFileName}>
+				<ElevatedButton buttonProps={{ tabindex: -1 }}>Download</ElevatedButton>
+			</a>
 		{/if}
 	{/snippet}
 </Dialog>

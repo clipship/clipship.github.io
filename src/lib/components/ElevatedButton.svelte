@@ -9,7 +9,7 @@
 		outline?: boolean;
 
 		disableMouseFocus?: boolean;
-		onclick: (ev: MouseEvent) => void;
+		onclick?: (ev: MouseEvent) => void;
 		children: Snippet;
 
 		buttonProps?: Omit<HTMLButtonAttributes, 'children' | 'onclick'>;
