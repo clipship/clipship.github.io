@@ -2,7 +2,7 @@
 	import { untrack } from 'svelte';
 	import Audio from './Audio.svelte';
 	import ControlArea from './ControlArea.svelte';
-	import ExportDialog from './ExportDialog.svelte';
+	import ExportDialog from './ExportDialog/ExportDialog.svelte';
 	import type { RangeInterval } from './TimelineArea/interval-space';
 	import type { TrackState } from './TimelineArea/TimelineArea.svelte';
 	import TimelineArea from './TimelineArea/TimelineArea.svelte';
