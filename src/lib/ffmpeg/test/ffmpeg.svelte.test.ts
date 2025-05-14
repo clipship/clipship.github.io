@@ -1,6 +1,6 @@
 import { render } from '@testing-library/svelte';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
-import { FFmpegApi } from '../ffmpeg-api';
+import { FFmpegApi, type AudioStreamInput, type ConversionMode } from '../ffmpeg-api';
 import FFmpegTestWrapper from './FFmpegTestWrapper.svelte';
 
 import urlSampleVideoMp4 from './samples/sample-multistream.mp4?url';
@@ -44,29 +44,31 @@ describe('Extract region from sample video', () => {
 
 	describe.sequential.for<
 		[
-			includeVideo: boolean,
+			mode: ConversionMode,
 			audioStreams: number,
 			singleOutputStream: boolean,
 			expectedOutputStreams: number
 		]
 	>([
-		[false, 1, false, 1],
-		[false, 2, false, 2],
-		[false, 2, true, 1],
+		[{ includeVideo: false, outputFormat: 'opus' }, 1, false, 1],
+		[{ includeVideo: false, outputFormat: 'opus' }, 2, false, 2],
+		[{ includeVideo: false, outputFormat: 'opus' }, 2, true, 1],
 
-		[true, 0, false, 1],
-		[true, 1, false, 2],
-		[true, 2, false, 3],
-		[true, 2, true, 2]
+		[{ includeVideo: true }, 0, false, 1],
+		[{ includeVideo: true }, 1, false, 2],
+		[{ includeVideo: true }, 2, false, 3],
+		[{ includeVideo: true }, 2, true, 2]
 	])(
 		'Video: %s, Audio streams: %i (merged: %s)',
-		([includeVideo, audioStreams, singleOutputStream, expectedOutputStreams]) => {
-			const audioStreamIds = new Array(audioStreams).fill(0).map((_, i) => i);
+		([mode, audioStreamCount, singleOutputStream, expectedOutputStreams]) => {
+			const audioStreams = new Array(audioStreamCount)
+				.fill(0)
+				.map<AudioStreamInput>((_, i) => ({ id: i, volume: 1 }));
 
 			test('No trimming', async () => {
 				const { outputFileInFFmpeg } = await ffmpeg.convert(file, {
-					includeVideo,
-					audio: { streamIds: audioStreamIds, singleOutputStream }
+					mode,
+					audio: { streams: audioStreams, singleOutputStream }
 				});
 
 				const { format, streams } = await ffmpeg.probe(outputFileInFFmpeg);
@@ -76,7 +78,7 @@ describe('Extract region from sample video', () => {
 				expect(streams).toHaveLength(expectedOutputStreams);
 
 				const videoStreams = streams.filter((stream) => stream.codec_type === 'video');
-				expect(videoStreams.length > 0).toEqual(includeVideo);
+				expect(videoStreams.length > 0).toEqual(mode.includeVideo);
 			});
 
 			test('Low precision trimming', async () => {
@@ -86,8 +88,8 @@ describe('Extract region from sample video', () => {
 						end: 10.25,
 						highPrecision: false
 					},
-					includeVideo,
-					audio: { streamIds: audioStreamIds, singleOutputStream }
+					mode,
+					audio: { streams: audioStreams, singleOutputStream }
 				});
 
 				const { format, streams } = await ffmpeg.probe(outputFileInFFmpeg);
@@ -96,7 +98,7 @@ describe('Extract region from sample video', () => {
 				expect(streams).toHaveLength(expectedOutputStreams);
 
 				const videoStreams = streams.filter((stream) => stream.codec_type === 'video');
-				expect(videoStreams.length > 0).toEqual(includeVideo);
+				expect(videoStreams.length > 0).toEqual(mode.includeVideo);
 			});
 
 			test('High precision trimming', async () => {
@@ -106,8 +108,8 @@ describe('Extract region from sample video', () => {
 						end: 10.25,
 						highPrecision: true
 					},
-					includeVideo,
-					audio: { streamIds: audioStreamIds, singleOutputStream }
+					mode,
+					audio: { streams: audioStreams, singleOutputStream }
 				});
 
 				const { format, streams } = await ffmpeg.probe(outputFileInFFmpeg);
@@ -117,7 +119,7 @@ describe('Extract region from sample video', () => {
 				expect(streams).toHaveLength(expectedOutputStreams);
 
 				const videoStreams = streams.filter((stream) => stream.codec_type === 'video');
-				expect(videoStreams.length > 0).toEqual(includeVideo);
+				expect(videoStreams.length > 0).toEqual(mode.includeVideo);
 			});
 		}
 	);

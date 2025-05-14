@@ -51,7 +51,7 @@
 					? { outputFormat: settings.videoFormat, includeVideo: true }
 					: { outputFormat: settings.audioFormat, includeVideo: false },
 				audio: {
-					streamIds: activeTracks.map((_, id) => id),
+					streams: activeTracks.map((track, id) => ({ id, volume: track.volume })),
 					singleOutputStream:
 						!outputFormat.supportsMultipleAudioStreams || settings.singleAudioOutputStream
 				},

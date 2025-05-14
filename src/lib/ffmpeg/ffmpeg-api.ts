@@ -167,13 +167,13 @@ export class FFmpegApi {
 				...(includeVideo ? ['-map', '0:v?'] : []),
 
 				// Include audio streams
-				...audio.streamIds.flatMap((audioStreamId) => ['-map', `0:a:${audioStreamId}`]),
+				...audio.streams.flatMap(({ id: audioStreamId }) => ['-map', `0:a:${audioStreamId}`]),
 
 				// Mix audio streams into a single output stream
-				...(audio.singleOutputStream && audio.streamIds.length >= 2
+				...(audio.singleOutputStream && audio.streams.length >= 2
 					? [
 							'-filter_complex',
-							`amix=inputs=${audio.streamIds.length}:dropout_transition=0:normalize=0`
+							`amix=inputs=${audio.streams.length}:dropout_transition=0:normalize=0`
 						]
 					: []),
 
@@ -248,11 +248,16 @@ export type ConversionMode =
 			outputFormat: ValidAudioFormat;
 	  };
 
-interface ConvertOptions {
+export interface AudioStreamInput {
+	id: number;
+	volume: number;
+}
+
+export interface ConvertOptions {
 	mode: ConversionMode;
 
 	audio: {
-		streamIds: number[];
+		streams: AudioStreamInput[];
 		singleOutputStream: boolean;
 	};
 	trimming?: {
