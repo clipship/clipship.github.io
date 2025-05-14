@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
 	import { untrack } from 'svelte';
+	import { editorPreferences } from '../../../client-state/preferences.svelte';
 	import ElevatedButton from '../../ElevatedButton.svelte';
 	import Dialog from '../../Overlay/Dialog.svelte';
 	import { AllFormats } from '../formats';
-	import { editorPreferences } from '../preferences.svelte';
 	import type { RangeInterval } from '../TimelineArea/interval-space';
 	import type { TrackState } from '../TimelineArea/TimelineArea.svelte';
 	import ContentSettings from './ContentConfigure.svelte';
@@ -33,7 +33,7 @@
 
 	let phase = $state<Phase>({ type: 'configuring' });
 
-	const settings = editorPreferences.export;
+	const settings = editorPreferences.value.export;
 
 	const outputFormatName = $derived(
 		settings.includeVideo ? settings.videoFormat : settings.audioFormat

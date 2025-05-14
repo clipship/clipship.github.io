@@ -3,8 +3,11 @@
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Setting from '$lib/components/Setting.svelte';
+	import {
+		editorPreferences,
+		type VideoExportMode
+	} from '../../../client-state/preferences.svelte';
 	import { AudioFormats, VideoFormats } from '../formats';
-	import { editorPreferences, type VideoExportMode } from '../preferences.svelte';
 	import Duration from './Duration.svelte';
 
 	const VIDEO_EXPORT_MODES: VideoExportMode[] = ['fast', 're-encode'];
@@ -17,7 +20,7 @@
 
 	let { trackCount, clipDurationInSeconds, supportsMultipleAudioStreams }: Props = $props();
 
-	const settings = editorPreferences.export;
+	const settings = editorPreferences.value.export;
 </script>
 
 <div class="content">
