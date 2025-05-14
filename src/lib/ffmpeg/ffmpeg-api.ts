@@ -77,6 +77,17 @@ export class FFmpegApi {
 		this.ffmpeg.terminate();
 	}
 
+	private async exec(args: string[]) {
+		if (this._enableLogging) {
+			console.log(
+				'Running',
+				['ffmpeg', ...args.map((arg) => (arg.includes(' ') ? `"${arg}"` : arg))].join(' '),
+				args
+			);
+		}
+		return await this.ffmpeg.exec(args);
+	}
+
 	async probe(file: File | string): Promise<FFprobeOutput> {
 		const fileName = file instanceof File ? file.name : file;
 		const jsonOutputFile = `${fileName}-ffprobe.json`;
@@ -107,10 +118,8 @@ export class FFmpegApi {
 		}
 
 		await this.useMountedFile(file, (mountedFilePath) => {
-			return this.ffmpeg.exec([
+			return this.exec([
 				...['-loglevel', 'info'],
-				// Always overwrite files
-				'-y',
 				...['-i', mountedFilePath],
 				...audioStreamIds.flatMap((audioStreamId) => [
 					// Extract playable audio stream as WAV (16-bit, little endian)
@@ -152,11 +161,11 @@ export class FFmpegApi {
 
 		const reencode = trimming?.highPrecision ?? false;
 
+		const shouldApplySingleAudio = audio.singleOutputStream && audio.streams.length >= 2;
+
 		await this.useMountedFile(file, (mountedFilePath) => {
-			return this.ffmpeg.exec([
+			return this.exec([
 				...['-loglevel', 'info'],
-				// Always overwrite files
-				'-y',
 
 				...['-i', mountedFilePath],
 
@@ -166,14 +175,26 @@ export class FFmpegApi {
 				// Include video
 				...(includeVideo ? ['-map', '0:v?'] : []),
 
-				// Include audio streams
-				...audio.streams.flatMap(({ id: audioStreamId }) => ['-map', `0:a:${audioStreamId}`]),
-
 				// Mix audio streams into a single output stream
-				...(audio.singleOutputStream && audio.streams.length >= 2
+				...(shouldApplySingleAudio
+					? [
+							// Include only relevant audio streams
+							...audio.streams.flatMap(({ id: audioStreamId }) => ['-map', `0:a:${audioStreamId}`]),
+
+							'-filter_complex',
+							`amix=inputs=${audio.streams.length}:weights="${this.createFFmpegAmixWeights(audio.streams)}":dropout_transition=0:normalize=0`
+						]
+					: []),
+
+				// Adjust audio stream volume separately
+				...(!shouldApplySingleAudio && audio.streams.length > 0
 					? [
 							'-filter_complex',
-							`amix=inputs=${audio.streams.length}:dropout_transition=0:normalize=0`
+							audio.streams
+								.map(({ id, volume }) => `[0:a:${id}] volume=${volume} [a${id}]`)
+								.join('; '),
+
+							...audio.streams.flatMap(({ id }) => ['-map', `[a${id}]`])
 						]
 					: []),
 
@@ -195,6 +216,10 @@ export class FFmpegApi {
 			outputFileInFFmpeg: outputFile,
 			outputBuffer: outputFileBuffer as ArrayBuffer
 		};
+	}
+
+	private createFFmpegAmixWeights(streams: AudioStreamInput[]) {
+		return streams.map((stream) => stream.volume.toFixed(3)).join(' ');
 	}
 
 	private getFFmpegCodecOptionsForFormat(format: ValidFormat, options: ConvertOptions): string[] {

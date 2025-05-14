@@ -29,7 +29,7 @@
 
 	let isTrimmingActive = $derived(markingRange.start > 0 || markingRange.end < 1);
 	let clipDuration = $derived((markingRange.end - markingRange.start) * videoDuration);
-	let activeTracks = $derived(tracks.filter((track) => track.isUsed));
+	let activeTrackCount = $derived(tracks.filter((track) => track.isUsed).length);
 
 	let phase = $state<Phase>({ type: 'configuring' });
 
@@ -51,7 +51,9 @@
 					? { outputFormat: settings.videoFormat, includeVideo: true }
 					: { outputFormat: settings.audioFormat, includeVideo: false },
 				audio: {
-					streams: activeTracks.map((track, id) => ({ id, volume: track.volume })),
+					streams: tracks
+						.map((track, id) => (track.isUsed ? { id, volume: track.volume } : null))
+						.filter((stream) => stream !== null),
 					singleOutputStream:
 						!outputFormat.supportsMultipleAudioStreams || settings.singleAudioOutputStream
 				},
@@ -103,7 +105,7 @@
 	{#if phase.type === 'configuring'}
 		<ContentSettings
 			clipDurationInSeconds={clipDuration}
-			trackCount={activeTracks.length}
+			trackCount={activeTrackCount}
 			supportsMultipleAudioStreams={outputFormat.supportsMultipleAudioStreams}
 		/>
 	{:else if phase.type === 'exporting'}
