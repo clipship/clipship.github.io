@@ -75,6 +75,7 @@ $flat-icon-button-size: 32px;
 
 	&:active {
 		@include area(#aaa5);
-		transition-duration: 0s;
+		transition-duration: 0.05s;
+		scale: 0.9;
 	}
 }

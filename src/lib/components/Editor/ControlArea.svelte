@@ -40,7 +40,7 @@
 
 <div class="grid">
 	<div class="sub-area margin-right">
-		<IconButton icon={FolderUpIcon} onclick={() => fileInput!.open()} color="neutral" stroke>
+		<IconButton icon={FolderUpIcon} onclick={() => fileInput!.open()} color="neutral">
 			Open File
 		</IconButton>
 	</div>
@@ -65,7 +65,7 @@
 				{paused ? 'Play' : 'Pause'}
 			</IconButton>
 
-			<ToggleButton icon={Repeat2Icon} bind:value={loop} stroke disableMouseFocus>
+			<ToggleButton icon={Repeat2Icon} bind:value={loop} disableMouseFocus>
 				{loop ? 'Disable Loop' : 'Enable Loop'}
 			</ToggleButton>
 		</div>
@@ -75,9 +75,7 @@
 		</div>
 	</div>
 	<div class="sub-area margin-left">
-		<IconButton icon={ClapperboardIcon} onclick={exportClip} stroke color="secondary">
-			Export
-		</IconButton>
+		<IconButton icon={ClapperboardIcon} onclick={exportClip} color="secondary">Export</IconButton>
 	</div>
 </div>
 

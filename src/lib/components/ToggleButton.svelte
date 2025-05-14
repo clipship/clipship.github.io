@@ -6,7 +6,7 @@
 	interface Props {
 		icon: typeof IconType;
 		color?: Color;
-		stroke?: boolean;
+		variant?: 'outlined' | 'flat';
 		disableMouseFocus?: boolean;
 
 		value: boolean;
@@ -16,7 +16,7 @@
 	let {
 		icon,
 		color,
-		stroke = false,
+		variant = 'outlined',
 		disableMouseFocus,
 		value = $bindable(),
 		children
@@ -26,9 +26,8 @@
 <IconButton
 	{icon}
 	{color}
-	{stroke}
 	{disableMouseFocus}
-	variant="outlined"
+	{variant}
 	onclick={() => (value = !value)}
 	disabled={value ? false : 'visual-only'}
 	buttonProps={{

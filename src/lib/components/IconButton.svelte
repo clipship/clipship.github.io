@@ -9,7 +9,6 @@
 
 	interface Props {
 		icon: typeof IconType;
-		stroke?: boolean;
 		color?: Color;
 		variant?: Variant;
 		disabled?: boolean | 'visual-only';
@@ -24,7 +23,6 @@
 	let {
 		buttonProps,
 		icon: Icon,
-		stroke = false,
 		color = 'primary',
 		variant = 'filled',
 		disabled = false,
@@ -48,7 +46,7 @@
 		disabled={disabled === true}
 		class:visual-disabled={disabled === 'visual-only'}
 	>
-		<Icon fill={stroke ? 'transparent' : 'currentColor'} aria-hidden />
+		<Icon aria-hidden />
 	</button>
 
 	{#snippet title()}

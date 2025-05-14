@@ -151,7 +151,11 @@
 
 			{#each tracks as track, index (index)}
 				<div class="track">
-					<TrackTimeline range={transformAsRange.current} wavBuffer={track.wavBuffer} />
+					<TrackTimeline
+						range={transformAsRange.current}
+						wavBuffer={track.wavBuffer}
+						isUsed={track.isUsed}
+					/>
 				</div>
 			{/each}
 		</div>
@@ -190,7 +194,6 @@
 
 	.timeline {
 		position: relative;
-		background-color: scheme.var-color('primary', -2);
 	}
 
 	.track {
