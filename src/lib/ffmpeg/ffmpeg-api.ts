@@ -177,13 +177,7 @@ export class FFmpegApi {
 
 				// Mix audio streams into a single output stream
 				...(shouldApplySingleAudio
-					? [
-							// Include only relevant audio streams
-							...audio.streams.flatMap(({ id: audioStreamId }) => ['-map', `0:a:${audioStreamId}`]),
-
-							'-filter_complex',
-							`amix=inputs=${audio.streams.length}:weights="${this.createFFmpegAmixWeights(audio.streams)}":dropout_transition=0:normalize=0`
-						]
+					? ['-filter_complex', this.createFFmpegAmixFilter(audio.streams)]
 					: []),
 
 				// Adjust audio stream volume separately
@@ -218,8 +212,12 @@ export class FFmpegApi {
 		};
 	}
 
-	private createFFmpegAmixWeights(streams: AudioStreamInput[]) {
-		return streams.map((stream) => stream.volume.toFixed(3)).join(' ');
+	private createFFmpegAmixFilter(streams: AudioStreamInput[]) {
+		const inputStreamSelection = streams.map(({ id }) => `[0:a:${id}]`).join('');
+
+		const weights = streams.map((stream) => stream.volume.toFixed(3)).join(' ');
+
+		return `${inputStreamSelection} amix=inputs=${streams.length}:dropout_transition=0:normalize=0:weights='${weights}'`;
 	}
 
 	private getFFmpegCodecOptionsForFormat(format: ValidFormat, options: ConvertOptions): string[] {
