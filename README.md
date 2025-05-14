@@ -1,38 +1,22 @@
-# sv
+# clipship
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A multi-media editor for cutting and converting video clips, right in your browser.
 
-## Creating a project
+## Development
 
-If you're seeing this, you've probably already done this step. Congrats!
+The repository consists of a [SvelteKit](https://svelte.dev/docs/kit/introduction) project running on [Node.js](https://nodejs.org/en). To get started with development, use the [pnpm](https://pnpm.io/) package manager to install all necessary dependencies.
 
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+```sh
+# Install dependencies from package.json
+pnpm install
 ```
 
-## Developing
+After that, you're good to go - simply start a hot-reloading Vite server with `pnpm dev`:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+```sh
+# Start the development server
+pnpm dev
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# Optionally, pass --open to immediately open the website in your browser
+pnpm dev --open
 ```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
