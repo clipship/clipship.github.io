@@ -27,6 +27,7 @@
 
 	export interface TrackState {
 		isUsed: boolean;
+		volume: number;
 		wavBuffer?: ArrayBuffer;
 	}
 
@@ -129,7 +130,11 @@
 		<div class="channels">
 			{#each tracks as track, index (index)}
 				<div class="track">
-					<TrackChannel bind:isUsed={track.isUsed} name={'Track ' + (index + 1)} />
+					<TrackChannel
+						bind:isUsed={track.isUsed}
+						bind:volume={track.volume}
+						name={'Track ' + (index + 1)}
+					/>
 				</div>
 			{/each}
 		</div>
@@ -165,7 +170,7 @@
 <style lang="scss">
 	@use '$lib/style/scheme';
 
-	$channel-width: 160px;
+	$channel-width: 180px;
 
 	.marking-bar,
 	.timeline-area {

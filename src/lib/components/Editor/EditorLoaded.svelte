@@ -143,6 +143,7 @@
 	{#if track.wavBuffer}
 		<Audio
 			wavBuffer={track.wavBuffer}
+			volume={track.volume}
 			muted={!track.isUsed}
 			{paused}
 			referenceTime={controlledTime[0]}

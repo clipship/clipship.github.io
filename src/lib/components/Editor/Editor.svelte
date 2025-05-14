@@ -34,7 +34,8 @@
 		const audioStreams = probeOutput.streams.filter((stream) => stream.codec_type === 'audio');
 
 		tracks = audioStreams.map(() => ({
-			isUsed: true
+			isUsed: true,
+			volume: 1.0
 		}));
 
 		const audioStreamIds = audioStreams.map((_, id) => id);
