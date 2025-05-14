@@ -4,13 +4,14 @@
 
 	interface Props {
 		checked: boolean;
+		name: string;
 	}
 
-	let { checked = $bindable() }: Props = $props();
+	let { checked = $bindable(), name }: Props = $props();
 </script>
 
 <label>
-	<input type="checkbox" bind:checked />
+	<input {name} type="checkbox" bind:checked />
 
 	{#if !checked}
 		<SquareIcon size={28} />

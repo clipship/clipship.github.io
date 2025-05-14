@@ -81,9 +81,9 @@
 
 			{#snippet trailing()}
 				{#if supportsMultipleAudioStreams}
-					<Checkbox bind:checked={settings.singleAudioOutputStream} />
+					<Checkbox name="merge-audio" bind:checked={settings.singleAudioOutputStream} />
 				{:else}
-					<Checkbox checked={true} />
+					<Checkbox name="merge-audio" checked={true} />
 				{/if}
 			{/snippet}
 		</Setting>
