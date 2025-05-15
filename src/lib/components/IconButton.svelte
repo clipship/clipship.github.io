@@ -9,6 +9,7 @@
 
 	interface Props {
 		icon: typeof IconType;
+		iconFill?: boolean;
 		color?: Color;
 		variant?: Variant;
 		disabled?: boolean | 'visual-only';
@@ -23,6 +24,7 @@
 	let {
 		buttonProps,
 		icon: Icon,
+		iconFill = false,
 		color = 'primary',
 		variant = 'filled',
 		disabled = false,
@@ -46,7 +48,7 @@
 		disabled={disabled === true}
 		class:visual-disabled={disabled === 'visual-only'}
 	>
-		<Icon aria-hidden />
+		<Icon aria-hidden fill={iconFill ? 'currentcolor' : 'transparent'} />
 	</button>
 
 	{#snippet title()}

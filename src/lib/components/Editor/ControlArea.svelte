@@ -53,12 +53,19 @@
 		</div>
 
 		<div class="flex">
-			<IconButton icon={RewindIcon} onclick={snapToStart} color="neutral" disableMouseFocus>
+			<IconButton
+				icon={RewindIcon}
+				iconFill
+				onclick={snapToStart}
+				color="neutral"
+				disableMouseFocus
+			>
 				Go to Start
 			</IconButton>
 
 			<IconButton
 				icon={paused ? PlayIcon : PauseIcon}
+				iconFill
 				onclick={() => (paused = !paused)}
 				disableMouseFocus
 			>
