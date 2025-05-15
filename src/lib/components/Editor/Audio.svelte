@@ -4,10 +4,11 @@
 		volume: number;
 		muted: boolean;
 		paused: boolean;
+		unpauseOnEnd: boolean;
 		referenceTime: number;
 	}
 
-	let { wavBuffer, volume, muted, paused, referenceTime }: Props = $props();
+	let { wavBuffer, volume, muted, paused, unpauseOnEnd, referenceTime }: Props = $props();
 
 	let audioBlob = $derived(new Blob([wavBuffer]));
 	let audioBlobUrl = $derived(URL.createObjectURL(audioBlob));
@@ -19,4 +20,15 @@
 	});
 </script>
 
-<audio src={audioBlobUrl} {volume} {muted} bind:paused bind:currentTime></audio>
+<audio
+	src={audioBlobUrl}
+	{volume}
+	{muted}
+	bind:paused
+	bind:currentTime
+	onended={() => {
+		if (unpauseOnEnd) {
+			paused = false;
+		}
+	}}
+></audio>

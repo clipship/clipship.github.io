@@ -149,6 +149,7 @@
 			volume={track.volume}
 			muted={!track.isUsed}
 			{paused}
+			unpauseOnEnd={loop}
 			referenceTime={controlledTime[0]}
 		/>
 	{/if}
