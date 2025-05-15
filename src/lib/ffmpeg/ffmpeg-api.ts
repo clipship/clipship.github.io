@@ -167,10 +167,10 @@ export class FFmpegApi {
 			return this.exec([
 				...['-loglevel', 'info'],
 
-				...['-i', mountedFilePath],
-
 				// Trim input
 				...(trimming ? ['-ss', `${trimming.start}`, '-to', `${trimming.end}`] : []),
+
+				...['-i', mountedFilePath],
 
 				// Include video
 				...(includeVideo ? ['-map', '0:v?'] : []),
