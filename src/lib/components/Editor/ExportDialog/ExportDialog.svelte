@@ -13,7 +13,7 @@
 
 	type Phase =
 		| { type: 'configuring' }
-		| { type: 'exporting' }
+		| { type: 'exporting'; progress?: number }
 		| { type: 'success'; result: ExportSuccess };
 
 	interface Props {
@@ -42,11 +42,18 @@
 
 	const { ffmpeg } = useFFmpeg();
 
+	function onFFmpegProgress(processedSeconds: number) {
+		if (phase.type === 'exporting') {
+			phase.progress = Math.min(Math.max(processedSeconds / clipDuration, 0), 1);
+		}
+	}
+
 	async function exportClip() {
 		phase = { type: 'exporting' };
 
 		try {
 			const { outputFileInFFmpeg, outputBuffer } = await $ffmpeg!.convert(file, {
+				onProgress: onFFmpegProgress,
 				mode: settings.includeVideo
 					? { outputFormat: settings.videoFormat, includeVideo: true }
 					: { outputFormat: settings.audioFormat, includeVideo: false },
@@ -109,7 +116,7 @@
 			supportsMultipleAudioStreams={outputFormat.supportsMultipleAudioStreams}
 		/>
 	{:else if phase.type === 'exporting'}
-		<ContentProgress progress={0} />
+		<ContentProgress progress={phase.progress} />
 	{:else}
 		<ContentSuccess {...phase.result} />
 	{/if}

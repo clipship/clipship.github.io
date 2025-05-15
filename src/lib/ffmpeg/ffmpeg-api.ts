@@ -1,4 +1,4 @@
-import { FFmpeg, type FFFSType, type LogEvent } from '@ffmpeg/ffmpeg';
+import { FFmpeg, type FFFSType, type LogEvent, type LogEventCallback } from '@ffmpeg/ffmpeg';
 
 import type {
 	ValidAudioFormat,
@@ -44,8 +44,11 @@ export class FFmpegApi {
 		}
 	}
 
-	private log(ev: LogEvent) {
-		console.log(ev.message);
+	private log({ message }: LogEvent) {
+		// Prevent excessive progress messages from getting logged
+		if (message.trim().includes(' ') || !message.includes('=')) {
+			console.log(message);
+		}
 	}
 
 	private async useMountedFile<T>(file: File, body: (mountedFilePath: string) => Promise<T>) {
@@ -86,6 +89,35 @@ export class FFmpegApi {
 			);
 		}
 		return await this.ffmpeg.exec(args);
+	}
+
+	private async execWithLogCallback(onLog: LogEventCallback, args: string[]) {
+		this.ffmpeg.on('log', onLog);
+		try {
+			return await this.exec(args);
+		} finally {
+			this.ffmpeg.off('log', onLog);
+		}
+	}
+
+	private async execWithProgressTimeCallback(
+		onProgress: (processedSeconds: number) => void,
+		args: string[]
+	) {
+		// Example progress message log:
+		// [...] out_time_us=1876917 [\n] out_time_ms=1876917 [\n] out_time=00:00:01.876917 [...]
+		const outTimeUsPrefix = 'out_time_us=';
+
+		return await this.execWithLogCallback(({ message }) => {
+			const prefixIndex = message.indexOf(outTimeUsPrefix);
+
+			if (prefixIndex >= 0) {
+				const outTimeUsSlice = message.slice(prefixIndex + outTimeUsPrefix.length);
+
+				const outTimeMicroseconds = Number(outTimeUsSlice);
+				onProgress(outTimeMicroseconds / 1000 / 1000);
+			}
+		}, args);
 	}
 
 	async probe(file: File | string): Promise<FFprobeOutput> {
@@ -163,9 +195,12 @@ export class FFmpegApi {
 
 		const shouldApplySingleAudio = audio.singleOutputStream && audio.streams.length >= 2;
 
+		const onProgress = options.onProgress ?? (() => {});
+
 		await this.useMountedFile(file, (mountedFilePath) => {
-			return this.exec([
+			return this.execWithProgressTimeCallback(onProgress, [
 				...['-loglevel', 'info'],
+				...['-progress', '-', '-nostats'],
 
 				// Trim input
 				...(trimming ? ['-ss', `${trimming.start}`, '-to', `${trimming.end}`] : []),
@@ -293,6 +328,8 @@ export interface ConvertOptions {
 		/** End time in seconds. */
 		end: number;
 	};
+
+	onProgress?: (processedOutputSeconds: number) => void;
 }
 
 export interface ConversionResult {
