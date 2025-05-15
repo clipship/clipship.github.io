@@ -53,6 +53,6 @@
 		"@fontsource-variable/montserrat": "^5.2.5",
 		"@fontsource/arvo": "^5.2.5",
 		"@lucide/svelte": "^0.485.0",
-		"svelte-tether": "^0.2.0"
+		"svelte-tether": "^0.2.1"
 	}
 }
