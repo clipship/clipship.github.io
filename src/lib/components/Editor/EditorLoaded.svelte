@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
+	import DropZone from '../DropZone.svelte';
 	import Audio from './Audio.svelte';
 	import ControlArea from './ControlArea.svelte';
 	import ExportDialog from './ExportDialog/ExportDialog.svelte';
@@ -136,6 +137,8 @@
 		/>
 	{/if}
 </div>
+
+<DropZone onDrop={(files) => onOpenFile(files[0])} />
 
 <ExportDialog bind:visible={isExportDialogVisible} {file} {tracks} {markingRange} {videoDuration} />
 

@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import type { FFmpegApi } from '$lib/ffmpeg/ffmpeg-api';
 	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
+	import DropZone from '../DropZone.svelte';
 	import EditorLoaded from './EditorLoaded.svelte';
 	import FilePicker from './FilePicker.svelte';
 	import { type TrackState } from './TimelineArea/TimelineArea.svelte';
@@ -58,6 +59,7 @@
 	<div class="loading">
 		<FilePicker onPickFile={(pickedFile) => (file = pickedFile)} />
 	</div>
+	<DropZone onDrop={(files) => (file = files[0])} />
 {:else}
 	<div>
 		<EditorLoaded bind:file bind:tracks />
