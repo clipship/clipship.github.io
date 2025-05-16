@@ -13,7 +13,7 @@
 				GitHub
 			{/snippet}
 
-			<a href="https://github.com/doodlezucc/clipship">
+			<a href="https://github.com/clipship/clipship.github.io">
 				<GithubIcon aria-hidden />
 			</a>
 		</Tooltip>
