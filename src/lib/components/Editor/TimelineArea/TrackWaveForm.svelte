@@ -18,6 +18,7 @@
 	let samples = $derived(createWavDataViewS16LE(wavBuffer));
 	let waveForm = $derived(new WaveForm(samples, 16));
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let sampleBins = $state<number[]>([]);
 
 	$effect(() => {

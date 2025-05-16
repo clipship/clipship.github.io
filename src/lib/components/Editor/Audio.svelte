@@ -13,11 +13,7 @@
 	let audioBlob = $derived(new Blob([wavBuffer]));
 	let audioBlobUrl = $derived(URL.createObjectURL(audioBlob));
 
-	let currentTime = $state(0);
-
-	$effect(() => {
-		currentTime = referenceTime;
-	});
+	let currentTime = $derived(referenceTime);
 </script>
 
 <audio

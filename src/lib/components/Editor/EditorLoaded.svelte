@@ -27,14 +27,10 @@
 
 	let paused = $state(true);
 	let loop = $state(true);
-	let videoCurrentTime = $state(0);
+
+	let videoCurrentTime = $derived(controlledTime[0]);
 	let videoDuration = $state(1);
 	let mediaPlayheadPosition = $derived(videoCurrentTime / videoDuration);
-
-	$effect(() => {
-		// Manually set video time when controlledCurrentTime changes
-		videoCurrentTime = controlledTime[0];
-	});
 
 	$effect(() => {
 		// Update video/media time when cursor gets moved via timeline interaction
