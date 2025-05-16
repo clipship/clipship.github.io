@@ -26,8 +26,9 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          registry-url: https://npm.pkg.github.com
-          scope: '@clipship'
+
+      - name: Prepare .npmrc
+        run: mv .npmrc.ci .npmrc
 
       - name: Install dependencies
         run: pnpm install
