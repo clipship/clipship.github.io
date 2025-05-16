@@ -5,8 +5,8 @@ import type {
 	ValidFormat,
 	ValidVideoFormat
 } from '$lib/components/Editor/formats';
-import urlFFmpegCoreWasm from '@ffmpeg/core/wasm?url';
-import urlFFmpegCore from '@ffmpeg/core?url';
+import urlFFmpegCoreWasm from '@clipship/ffmpeg-core/wasm?url';
+import urlFFmpegCore from '@clipship/ffmpeg-core?url';
 
 const MOUNT_POINT = '/input';
 
