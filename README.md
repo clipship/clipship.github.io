@@ -2,6 +2,8 @@
 
 A multi-media editor for cutting and converting video clips, right in your browser.
 
+![Screenshot](https://github.com/clipship/clipship.github.io/blob/main/repository-media/screenshot-export-dialog.png?raw=true)
+
 ## Development
 
 The repository consists of a [SvelteKit](https://svelte.dev/docs/kit/introduction) project running on [Node.js](https://nodejs.org/en). To get started with development, use the [pnpm](https://pnpm.io/) package manager to install all necessary dependencies.
