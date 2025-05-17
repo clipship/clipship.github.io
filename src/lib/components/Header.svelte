@@ -1,10 +1,14 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import GithubIcon from '@lucide/svelte/icons/github';
 	import Tooltip from './Overlay/Tooltip.svelte';
 </script>
 
 <header>
-	<h1>clipship</h1>
+	<div class="logo">
+		<img src="{base}/favicon.svg" alt="Icon" />
+		<h1>clipship</h1>
+	</div>
 	<p>web clip editor</p>
 
 	<div class="trailing">
@@ -32,6 +36,7 @@
 		align-items: center;
 		gap: 16px;
 		padding: 12px 32px;
+		padding-left: 24px;
 		backdrop-filter: blur(3px);
 
 		&::before {
@@ -45,6 +50,17 @@
 			background-color: scheme.var-color('background');
 			opacity: 0.5;
 		}
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+
+	img {
+		height: 32px;
+		margin-top: -2px;
 	}
 
 	h1 {
