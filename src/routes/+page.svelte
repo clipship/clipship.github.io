@@ -6,6 +6,10 @@
 
 <svelte:head>
 	<title>{pageState.windowTitle}</title>
+	<meta
+		name="description"
+		content="A multi-media editor for cutting and converting video clips, right in your browser."
+	/>
 </svelte:head>
 
 <FFmpegProvider>
