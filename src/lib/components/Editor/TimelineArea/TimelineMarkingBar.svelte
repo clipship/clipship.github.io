@@ -132,6 +132,8 @@
 					<Timecode seconds={markingRange.end * duration} />
 				{/snippet}
 			</Tooltip>
+		{:else}
+			<div class="instructions">Click to start trimming</div>
 		{/if}
 	{/snippet}
 </InteractiveTimelineBar>
@@ -203,5 +205,37 @@
 		width: calc(var(--end) - var(--start));
 		transform: translateX(var(--start));
 		background-color: scheme.var-color('secondary', -2);
+	}
+
+	$background-bar-spacing: 10px;
+	$background-bar-color: scheme.var-color('secondary', -2);
+
+	.instructions {
+		position: absolute;
+		z-index: -1;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: repeating-linear-gradient(
+			45deg,
+			transparent 0px,
+			transparent $background-bar-spacing,
+			$background-bar-color $background-bar-spacing,
+			$background-bar-color $background-bar-spacing * 2
+		);
+
+		font-size: 0.8em;
+		display: grid;
+		place-content: center;
+
+		transition: 0.2s;
+		opacity: 0.7;
+		color: transparent;
+	}
+
+	:global(.wrapper:hover) > .instructions {
+		opacity: 1;
+		color: inherit;
 	}
 </style>
