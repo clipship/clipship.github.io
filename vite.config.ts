@@ -14,6 +14,23 @@ export default defineConfig({
 	},
 
 	optimizeDeps: {
+		include: [
+			'svelte-tether',
+			'@lucide/svelte/icons/github',
+			'@lucide/svelte/icons/file-up',
+			'@lucide/svelte/icons/clapperboard',
+			'@lucide/svelte/icons/folder-up',
+			'@lucide/svelte/icons/pause',
+			'@lucide/svelte/icons/play',
+			'@lucide/svelte/icons/repeat-2',
+			'@lucide/svelte/icons/rewind',
+			'@lucide/svelte/icons/x',
+			'@lucide/svelte/icons/square',
+			'@lucide/svelte/icons/square-check',
+			'@lucide/svelte/icons/chevron-down',
+			'@lucide/svelte/icons/headphone-off',
+			'@lucide/svelte/icons/headphones'
+		],
 		exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/core']
 	},
 
