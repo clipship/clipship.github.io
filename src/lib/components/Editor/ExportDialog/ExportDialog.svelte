@@ -1,15 +1,23 @@
 <script lang="ts">
+	import type { FFprobeOutput } from '$lib/ffmpeg/ffmpeg-api';
 	import { useFFmpeg } from '$lib/ffmpeg/FFmpegProvider.svelte';
 	import { untrack } from 'svelte';
 	import { editorPreferences } from '../../../client-state/preferences.svelte';
 	import ElevatedButton from '../../ElevatedButton.svelte';
 	import Dialog from '../../Overlay/Dialog.svelte';
-	import { AllFormats } from '../formats';
+	import { AllFormats, type ValidFormat } from '../formats';
 	import type { RangeInterval } from '../TimelineArea/interval-space';
 	import type { TrackState } from '../TimelineArea/TimelineArea.svelte';
 	import ContentSettings from './ContentConfigure.svelte';
 	import ContentProgress from './ContentProgress.svelte';
-	import ContentSuccess, { type ExportSuccess } from './ContentSuccess.svelte';
+	import ContentSuccess from './ContentSuccess.svelte';
+
+	interface ExportSuccess {
+		outputFormat: ValidFormat;
+		outputBlobUrl: string;
+		outputFileName: string;
+		metadata: FFprobeOutput;
+	}
 
 	type Phase =
 		| { type: 'configuring' }
@@ -125,6 +133,7 @@
 		{#if phase.type === 'configuring'}
 			<ElevatedButton color="secondary" onclick={exportClip}>Export</ElevatedButton>
 		{:else if phase.type === 'success'}
+			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 			<a href={phase.result.outputBlobUrl} download={phase.result.outputFileName}>
 				<ElevatedButton buttonProps={{ tabindex: -1 }}>Download</ElevatedButton>
 			</a>

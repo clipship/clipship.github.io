@@ -1,25 +1,15 @@
 <script lang="ts">
 	import { pageState } from '$lib/client-state/page-state.svelte';
-	import type { FFprobeOutput } from '$lib/ffmpeg/ffmpeg-api';
-	import { onMount } from 'svelte';
 	import { VideoFormats, type ValidFormat } from '../formats';
 
-	export interface ExportSuccess {
+	interface Props {
 		outputFormat: ValidFormat;
 		outputBlobUrl: string;
-		outputFileName: string;
-		metadata: FFprobeOutput;
 	}
 
-	type Props = ExportSuccess;
-
-	let { outputFormat, outputBlobUrl, metadata }: Props = $props();
+	let { outputFormat, outputBlobUrl }: Props = $props();
 
 	pageState.useTitleWhileMounted(() => 'Exporting - Done!');
-
-	onMount(() => {
-		console.log('Displaying success with metadata', $state.snapshot(metadata));
-	});
 </script>
 
 <div>
