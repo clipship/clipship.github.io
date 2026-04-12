@@ -2,7 +2,7 @@
 	import type { Icon as IconType } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
-	import Tooltip from './Overlay/Tooltip.svelte';
+	import Tooltip from './overlay/Tooltip.svelte';
 
 	export type Color = 'primary' | 'secondary' | 'neutral';
 	export type Variant = 'filled' | 'outlined' | 'flat';

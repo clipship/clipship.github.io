@@ -4,7 +4,7 @@ import type {
 	ValidAudioFormat,
 	ValidFormat,
 	ValidVideoFormat
-} from '$lib/components/Editor/formats';
+} from '$lib/components/editor/formats';
 import urlFFmpegCoreWasm from '@clipship/ffmpeg-core/wasm?url';
 import urlFFmpegCore from '@clipship/ffmpeg-core?url';
 

@@ -5,7 +5,7 @@
 	import DropZone from '../DropZone.svelte';
 	import EditorLoaded from './EditorLoaded.svelte';
 	import FilePicker from './FilePicker.svelte';
-	import { type TrackState } from './TimelineArea/TimelineArea.svelte';
+	import { type TrackState } from './timeline-area/TimelineArea.svelte';
 
 	const { ffmpeg, startLoading } = useFFmpeg();
 

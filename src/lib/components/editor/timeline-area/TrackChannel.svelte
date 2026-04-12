@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Tooltip from '$lib/components/Overlay/Tooltip.svelte';
+	import Tooltip from '$lib/components/overlay/Tooltip.svelte';
 	import Slider from '$lib/components/Slider.svelte';
 	import ToggleButton from '$lib/components/ToggleButton.svelte';
 	import HeadphoneOffIcon from '@lucide/svelte/icons/headphone-off';

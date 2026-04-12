@@ -3,10 +3,10 @@
 	import DropZone from '../DropZone.svelte';
 	import Audio from './Audio.svelte';
 	import ControlArea from './ControlArea.svelte';
-	import ExportDialog from './ExportDialog/ExportDialog.svelte';
-	import type { RangeInterval } from './TimelineArea/interval-space';
-	import type { TrackState } from './TimelineArea/TimelineArea.svelte';
-	import TimelineArea from './TimelineArea/TimelineArea.svelte';
+	import ExportDialog from './export-dialog/ExportDialog.svelte';
+	import type { RangeInterval } from './timeline-area/interval-space';
+	import type { TrackState } from './timeline-area/TimelineArea.svelte';
+	import TimelineArea from './timeline-area/TimelineArea.svelte';
 	import VideoArea from './VideoArea.svelte';
 
 	interface Props {

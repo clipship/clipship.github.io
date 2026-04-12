@@ -9,7 +9,7 @@
 	import FileInput from '../FileInput.svelte';
 	import IconButton from '../IconButton.svelte';
 	import ToggleButton from '../ToggleButton.svelte';
-	import Timecode from './TimelineArea/Timecode.svelte';
+	import Timecode from './timeline-area/Timecode.svelte';
 
 	interface Props {
 		snapToStart: () => void;

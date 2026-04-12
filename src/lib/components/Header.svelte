@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { asset, base } from '$app/paths';
-	import Tooltip from './Overlay/Tooltip.svelte';
+	import Tooltip from './overlay/Tooltip.svelte';
 </script>
 
 <header>

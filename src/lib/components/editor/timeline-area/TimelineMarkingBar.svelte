@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Tooltip from '$lib/components/Overlay/Tooltip.svelte';
+	import Tooltip from '$lib/components/overlay/Tooltip.svelte';
 	import InteractiveTimelineBar, { timelineA11y } from './InteractiveTimelineBar.svelte';
 	import {
 		constrainRangeInterval,

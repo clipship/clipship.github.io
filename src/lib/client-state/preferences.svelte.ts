@@ -1,4 +1,4 @@
-import type { ValidAudioFormat, ValidVideoFormat } from '../components/Editor/formats';
+import type { ValidAudioFormat, ValidVideoFormat } from '../components/editor/formats';
 import { Persisted, persisted } from './persisted-state.svelte';
 
 interface EditorPreferences {

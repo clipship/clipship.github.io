@@ -4,10 +4,10 @@
 	import { untrack } from 'svelte';
 	import { editorPreferences } from '../../../client-state/preferences.svelte';
 	import ElevatedButton from '../../ElevatedButton.svelte';
-	import Dialog from '../../Overlay/Dialog.svelte';
+	import Dialog from '../../overlay/Dialog.svelte';
 	import { AllFormats, type ValidFormat } from '../formats';
-	import type { RangeInterval } from '../TimelineArea/interval-space';
-	import type { TrackState } from '../TimelineArea/TimelineArea.svelte';
+	import type { RangeInterval } from '../timeline-area/interval-space';
+	import type { TrackState } from '../timeline-area/TimelineArea.svelte';
 	import ContentSettings from './ContentConfigure.svelte';
 	import ContentProgress from './ContentProgress.svelte';
 	import ContentSuccess from './ContentSuccess.svelte';
