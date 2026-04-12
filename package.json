@@ -20,7 +20,7 @@
 		"@ffmpeg/ffmpeg": "^0.12.15",
 		"@fontsource-variable/montserrat": "^5.2.8",
 		"@fontsource/arvo": "^5.2.7",
-		"@lucide/svelte": "^0.552.0",
+		"@lucide/svelte": "^1.8.0",
 		"svelte-tether": "^0.2.1"
 	},
 	"devDependencies": {
