@@ -17,6 +17,7 @@
 		describeValue,
 		background = 'light',
 		onchange,
+		// eslint-disable-next-line no-useless-assignment
 		isDragging: readOnlyIsDragging = $bindable(false)
 	}: Props = $props();
 

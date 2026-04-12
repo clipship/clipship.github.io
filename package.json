@@ -15,30 +15,38 @@
 		"test:vitest": "vitest",
 		"test": "npm run test:vitest -- --run"
 	},
+	"dependencies": {
+		"@clipship/ffmpeg-core": "^0.12.10",
+		"@ffmpeg/ffmpeg": "^0.12.15",
+		"@fontsource-variable/montserrat": "^5.2.8",
+		"@fontsource/arvo": "^5.2.7",
+		"@lucide/svelte": "^1.8.0",
+		"svelte-tether": "^0.2.1"
+	},
 	"devDependencies": {
-		"@eslint/compat": "^1.4.1",
-		"@eslint/js": "^9.39.4",
-		"@playwright/test": "^1.58.2",
+		"@eslint/compat": "^2.0.5",
+		"@eslint/js": "^10.0.1",
+		"@playwright/test": "^1.59.1",
 		"@sveltejs/adapter-static": "^3.0.10",
-		"@sveltejs/kit": "^2.53.4",
-		"@sveltejs/vite-plugin-svelte": "^6.2.4",
+		"@sveltejs/kit": "^2.57.1",
+		"@sveltejs/vite-plugin-svelte": "^7.0.0",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/svelte": "^5.3.1",
-		"@vitest/browser-playwright": "^4.0.18",
-		"eslint": "^9.39.4",
+		"@vitest/browser-playwright": "^4.1.4",
+		"eslint": "^10.2.0",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-svelte": "^3.15.0",
-		"globals": "^16.5.0",
-		"jsdom": "^27.4.0",
-		"prettier": "^3.8.1",
+		"eslint-plugin-svelte": "^3.17.0",
+		"globals": "^17.5.0",
+		"jsdom": "^29.0.2",
+		"prettier": "^3.8.2",
 		"prettier-plugin-svelte": "^3.5.1",
-		"sass-embedded": "^1.97.3",
-		"svelte": "^5.53.7",
-		"svelte-check": "^4.4.4",
-		"typescript": "^5.9.3",
-		"typescript-eslint": "^8.56.1",
-		"vite": "^7.3.1",
-		"vitest": "^4.0.18"
+		"sass-embedded": "^1.99.0",
+		"svelte": "^5.55.3",
+		"svelte-check": "^4.4.6",
+		"typescript": "^6.0.2",
+		"typescript-eslint": "^8.58.1",
+		"vite": "^8.0.8",
+		"vitest": "^4.1.4"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
@@ -46,13 +54,5 @@
 			"msw"
 		]
 	},
-	"packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b",
-	"dependencies": {
-		"@clipship/ffmpeg-core": "^0.12.10",
-		"@ffmpeg/ffmpeg": "^0.12.15",
-		"@fontsource-variable/montserrat": "^5.2.8",
-		"@fontsource/arvo": "^5.2.7",
-		"@lucide/svelte": "^0.552.0",
-		"svelte-tether": "^0.2.1"
-	}
+	"packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b"
 }
