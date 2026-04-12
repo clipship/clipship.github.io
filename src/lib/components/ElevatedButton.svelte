@@ -6,7 +6,6 @@
 
 	interface Props {
 		color?: Color;
-		outline?: boolean;
 
 		disableMouseFocus?: boolean;
 		onclick?: (ev: MouseEvent) => void;
