@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { base } from '$app/paths';
-	import GithubIcon from '@lucide/svelte/icons/github';
+	import { asset, base } from '$app/paths';
 	import Tooltip from './Overlay/Tooltip.svelte';
 </script>
 
@@ -12,13 +11,13 @@
 	<p>web clip editor</p>
 
 	<div class="trailing">
-		<Tooltip alignment="bottom-center">
+		<Tooltip alignment="center-left">
 			{#snippet title()}
-				GitHub
+				Source Code
 			{/snippet}
 
 			<a href="https://github.com/clipship/clipship.github.io">
-				<GithubIcon aria-hidden />
+				<img width="24" src={asset('/logos/github.svg')} alt="GitHub Icon" aria-hidden="true" />
 			</a>
 		</Tooltip>
 	</div>

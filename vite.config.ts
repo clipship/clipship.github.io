@@ -16,7 +16,6 @@ export default defineConfig({
 	optimizeDeps: {
 		include: [
 			'svelte-tether',
-			'@lucide/svelte/icons/github',
 			'@lucide/svelte/icons/file-up',
 			'@lucide/svelte/icons/clapperboard',
 			'@lucide/svelte/icons/folder-up',
