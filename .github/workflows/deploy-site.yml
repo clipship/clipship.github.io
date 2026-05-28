@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - 'main'
+      - "main"
 
 jobs:
   build-site:
@@ -15,24 +15,23 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 10
+          version: 11
 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
 
       - name: Prepare .npmrc
         run: mv .npmrc.ci .npmrc
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -41,9 +40,9 @@ jobs:
           pnpm build
 
       - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
-          path: 'build/'
+          path: "build/"
 
   deploy:
     needs: build-site
@@ -60,4 +59,4 @@ jobs:
     steps:
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
