@@ -38,22 +38,25 @@ importers:
         version: 1.60.0
       '@sveltejs/adapter-static':
         specifier: ^3.0.10
-        version: 3.0.10(@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0)))
+        version: 3.0.10(@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)))
       '@sveltejs/kit':
         specifier: ^2.61.1
-        version: 2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+        version: 2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^7.1.2
-        version: 7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+        version: 7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
       '@testing-library/jest-dom':
         specifier: ^6.9.1
         version: 6.9.1
       '@testing-library/svelte':
         specifier: ^5.3.1
-        version: 5.3.1(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)
+        version: 5.3.1(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)
+      '@types/node':
+        specifier: ^25.9.1
+        version: 25.9.1
       '@vitest/browser-playwright':
         specifier: ^4.1.7
-        version: 4.1.7(playwright@1.60.0)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)
+        version: 4.1.7(playwright@1.60.0)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)
       eslint:
         specifier: ^10.4.0
         version: 10.4.0
@@ -92,10 +95,10 @@ importers:
         version: 8.60.0(eslint@10.4.0)(typescript@6.0.3)
       vite:
         specifier: ^8.0.14
-        version: 8.0.14(sass-embedded@1.100.0)(sass@1.100.0)
+        version: 8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)
       vitest:
         specifier: ^4.1.7
-        version: 4.1.7(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+        version: 4.1.7(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
 
 packages:
 
@@ -589,6 +592,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/node@25.9.1':
+    resolution: {integrity: sha512-xfrlY7UD5rMJk3ZVJP8BNzS28J36YJg+xp+LPXV1TdWxr8uMH5A860QNxYDGQe/ylDSgjxE52Q9VnO7p75tJxg==}
 
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
@@ -1587,6 +1593,9 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  undici-types@7.24.6:
+    resolution: {integrity: sha512-WRNW+sJgj5OBN4/0JpHFqtqzhpbnV0GuB+OozA9gCL7a993SmU+1JBZCzLNxYsbMfIeDL+lTsphD5jN5N+n0zg==}
+
   undici@7.26.0:
     resolution: {integrity: sha512-3O9Tf67pGhgOv9jM35AbhkXAKi13f3oy3aE4CSgr+TckGeY+/iu97ZXN+J7DpHPzLbVApFd1IFhcnBjREYXYcg==}
     engines: {node: '>=20.18.1'}
@@ -2060,15 +2069,15 @@ snapshots:
     dependencies:
       acorn: 8.16.0
 
-  '@sveltejs/adapter-static@3.0.10(@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0)))':
+  '@sveltejs/adapter-static@3.0.10(@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)))':
     dependencies:
-      '@sveltejs/kit': 2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+      '@sveltejs/kit': 2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
 
-  '@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))':
+  '@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.0))(typescript@6.0.3)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))':
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@sveltejs/acorn-typescript': 1.0.10(acorn@8.16.0)
-      '@sveltejs/vite-plugin-svelte': 7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+      '@sveltejs/vite-plugin-svelte': 7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
       '@types/cookie': 0.6.0
       acorn: 8.16.0
       cookie: 0.6.0
@@ -2080,18 +2089,18 @@ snapshots:
       set-cookie-parser: 3.1.0
       sirv: 3.0.2
       svelte: 5.55.9(@typescript-eslint/types@8.60.0)
-      vite: 8.0.14(sass-embedded@1.100.0)(sass@1.100.0)
+      vite: 8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)
     optionalDependencies:
       typescript: 6.0.3
 
-  '@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))':
+  '@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))':
     dependencies:
       deepmerge: 4.3.1
       magic-string: 0.30.21
       obug: 2.1.1
       svelte: 5.55.9(@typescript-eslint/types@8.60.0)
-      vite: 8.0.14(sass-embedded@1.100.0)(sass@1.100.0)
-      vitefu: 1.1.3(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+      vite: 8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)
+      vitefu: 1.1.3(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
 
   '@testing-library/dom@10.4.1':
     dependencies:
@@ -2117,14 +2126,14 @@ snapshots:
     dependencies:
       svelte: 5.55.9(@typescript-eslint/types@8.60.0)
 
-  '@testing-library/svelte@5.3.1(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)':
+  '@testing-library/svelte@5.3.1(svelte@5.55.9(@typescript-eslint/types@8.60.0))(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)':
     dependencies:
       '@testing-library/dom': 10.4.1
       '@testing-library/svelte-core': 1.0.0(svelte@5.55.9(@typescript-eslint/types@8.60.0))
       svelte: 5.55.9(@typescript-eslint/types@8.60.0)
     optionalDependencies:
-      vite: 8.0.14(sass-embedded@1.100.0)(sass@1.100.0)
-      vitest: 4.1.7(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+      vite: 8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)
+      vitest: 4.1.7(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
 
   '@tybys/wasm-util@0.10.2':
     dependencies:
@@ -2147,6 +2156,10 @@ snapshots:
   '@types/estree@1.0.9': {}
 
   '@types/json-schema@7.0.15': {}
+
+  '@types/node@25.9.1':
+    dependencies:
+      undici-types: 7.24.6
 
   '@types/trusted-types@2.0.7': {}
 
@@ -2241,29 +2254,29 @@ snapshots:
       '@typescript-eslint/types': 8.60.0
       eslint-visitor-keys: 5.0.1
 
-  '@vitest/browser-playwright@4.1.7(playwright@1.60.0)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)':
+  '@vitest/browser-playwright@4.1.7(playwright@1.60.0)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)':
     dependencies:
-      '@vitest/browser': 4.1.7(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)
-      '@vitest/mocker': 4.1.7(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+      '@vitest/browser': 4.1.7(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)
+      '@vitest/mocker': 4.1.7(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
       playwright: 1.60.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.7(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+      vitest: 4.1.7(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
     transitivePeerDependencies:
       - bufferutil
       - msw
       - utf-8-validate
       - vite
 
-  '@vitest/browser@4.1.7(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)':
+  '@vitest/browser@4.1.7(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)':
     dependencies:
       '@blazediff/core': 1.9.1
-      '@vitest/mocker': 4.1.7(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+      '@vitest/mocker': 4.1.7(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
       '@vitest/utils': 4.1.7
       magic-string: 0.30.21
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.1.0
-      vitest: 4.1.7(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+      vitest: 4.1.7(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
       ws: 8.21.0
     transitivePeerDependencies:
       - bufferutil
@@ -2280,13 +2293,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.7(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))':
+  '@vitest/mocker@4.1.7(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))':
     dependencies:
       '@vitest/spy': 4.1.7
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.0.14(sass-embedded@1.100.0)(sass@1.100.0)
+      vite: 8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)
 
   '@vitest/pretty-format@4.1.7':
     dependencies:
@@ -3104,6 +3117,8 @@ snapshots:
 
   typescript@6.0.3: {}
 
+  undici-types@7.24.6: {}
+
   undici@7.26.0: {}
 
   uri-js@4.4.1:
@@ -3114,7 +3129,7 @@ snapshots:
 
   varint@6.0.0: {}
 
-  vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0):
+  vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -3122,18 +3137,19 @@ snapshots:
       rolldown: 1.0.2
       tinyglobby: 0.2.16
     optionalDependencies:
+      '@types/node': 25.9.1
       fsevents: 2.3.3
       sass: 1.100.0
       sass-embedded: 1.100.0
 
-  vitefu@1.1.3(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0)):
+  vitefu@1.1.3(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)):
     optionalDependencies:
-      vite: 8.0.14(sass-embedded@1.100.0)(sass@1.100.0)
+      vite: 8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)
 
-  vitest@4.1.7(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0)):
+  vitest@4.1.7(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(jsdom@29.1.1)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)):
     dependencies:
       '@vitest/expect': 4.1.7
-      '@vitest/mocker': 4.1.7(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))
+      '@vitest/mocker': 4.1.7(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))
       '@vitest/pretty-format': 4.1.7
       '@vitest/runner': 4.1.7
       '@vitest/snapshot': 4.1.7
@@ -3150,10 +3166,11 @@ snapshots:
       tinyexec: 1.2.2
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
-      vite: 8.0.14(sass-embedded@1.100.0)(sass@1.100.0)
+      vite: 8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@vitest/browser-playwright': 4.1.7(playwright@1.60.0)(vite@8.0.14(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)
+      '@types/node': 25.9.1
+      '@vitest/browser-playwright': 4.1.7(playwright@1.60.0)(vite@8.0.14(@types/node@25.9.1)(sass-embedded@1.100.0)(sass@1.100.0))(vitest@4.1.7)
       jsdom: 29.1.1
     transitivePeerDependencies:
       - msw
