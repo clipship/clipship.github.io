@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte';
 	import '$lib/style/global.scss';
-	import '@fontsource-variable/montserrat';
-	import '@fontsource/arvo';
+	import '@fontsource-variable/montserrat/wght.css';
+	import '@fontsource/arvo/400.css';
 	import type { Snippet } from 'svelte';
 	import { PortalOverlay, TetherBoundary } from 'svelte-tether';
 
